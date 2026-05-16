@@ -1,4 +1,0 @@
-"0","deaths <-  deaths%>%"
-"0","  mutate(m_x=D/N)"
-"0","plot(x=deaths[location==""Argentina"", x], "
-"0","      y=log(deaths[location==""Argentina"", m_x]))"

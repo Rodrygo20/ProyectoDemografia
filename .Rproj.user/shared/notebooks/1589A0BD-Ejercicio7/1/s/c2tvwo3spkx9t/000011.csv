@@ -1,4 +1,0 @@
-"0",""
-"0","t_seq <- seq(0, max(datos_tarea$time), length.out = 300)"
-"0",""
-"0","lines(t_seq, exp(-exp(-coef(mod_exp)) * t_seq), col = ""darkblue"", lwd = 2, lty = 2)"

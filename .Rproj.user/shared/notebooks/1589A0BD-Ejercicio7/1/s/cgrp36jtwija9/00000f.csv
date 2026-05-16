@@ -1,7 +1,0 @@
-"0","estadistico_gg <- 2 * (logL_gg - logL_wei)"
-"0","p_valor_gg <- pchisq(estadistico_gg, df = 1, lower.tail = FALSE)"
-"0","print(p_valor_gg)"
-"1","[1]"
-"1"," 0.5699393"
-"1","
-"

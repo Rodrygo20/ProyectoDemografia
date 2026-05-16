@@ -1,7 +1,0 @@
-"0","datos_b <- make_datos(theta = 0.5, rhos = c(0.3, 0.5, 0.8, 1.0))"
-"0",""
-"0","make_plot("
-"0","  datos   = datos_b,"
-"0","  titulo  = expression(bold(""(b)"") ~ theta < 1 ~ ""y"" ~ rho * theta < 1),"
-"0","  subtit  = expression(lambda == 1 ~ ""fija  |"" ~ theta == 0.5)"
-"0",")"

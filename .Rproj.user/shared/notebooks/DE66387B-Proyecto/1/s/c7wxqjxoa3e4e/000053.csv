@@ -1,3 +1,0 @@
-"0","deaths %>% "
-"0","  group_by(location) %>% "
-"0","  summarize(weight.mean(m_x/sum(x)))"

@@ -1,4 +1,0 @@
-"0","plot(km_fit, "
-"0","     main = ""Supervivencia NCCTG Lung Cancer"", "
-"0","     xlab = ""tiempo"", ylab = ""S(t)"", "
-"0","     col = ""black"", lwd = 2)"

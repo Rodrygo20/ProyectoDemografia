@@ -1,4 +1,0 @@
-"0",""
-"0","mu_w  <- coef(mod_wei)"
-"0","sig_w <- mod_wei$scale"
-"0","lines(t_seq, exp(-exp((log(t_seq) - mu_w) / sig_w)), col = ""cyan4"", lwd = 2, lty = 2)"

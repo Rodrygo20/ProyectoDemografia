@@ -1,7 +1,0 @@
-"0","par(mfrow= c(1, 2), mar =c(4, 4, 3, 1))"
-"0",""
-"0","plot(t, log(S_t), "
-"0","     main = ""Exponencial"", "
-"0","     xlab = ""tiempo"", "
-"0","     ylab = ""logS_t"","
-"0","     pch = 16, col= ""darkblue"")"
