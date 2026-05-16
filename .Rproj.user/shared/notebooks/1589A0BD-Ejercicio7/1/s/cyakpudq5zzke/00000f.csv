@@ -1,0 +1,1 @@
+"0","km_fit <- survfit(Surv(datos_tarea$time, datos_tarea$status)~ 1, data = datos_tarea) "

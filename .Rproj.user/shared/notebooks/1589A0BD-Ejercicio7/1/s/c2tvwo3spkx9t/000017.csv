@@ -1,0 +1,5 @@
+"0",""
+"0","legend(""topright"", "
+"0","       legend = c(""Kaplan-Meier"", ""Exponencial"", ""Weibull"", ""Gamma Generalizada""), "
+"0","       col    = c(""black"", ""darkblue"", ""cyan4"", ""darkgreen""), "
+"0","       lwd    = 2, lty = c(1, 2, 2, 2))"

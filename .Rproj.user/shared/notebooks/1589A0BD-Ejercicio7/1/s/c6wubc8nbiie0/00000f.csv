@@ -1,0 +1,4 @@
+"0","logL_exp <- mod_exp$loglik[1] # L(lambda_hat) de tus apuntes"
+"0","logL_wei <- mod_wei$loglik[1] # L(gamma_hat, lambda_hat) "
+"0",""
+"0","estadistico_lambda <- 2 * (logL_wei - logL_exp)"

@@ -1,0 +1,6 @@
+"0",""
+"0","plot(log(t), log(-log(S_t)), "
+"0","     main = ""Weibull"", "
+"0","     xlab = ""logS_t"", "
+"0","     ylab = ""log(-log(S_t))"", "
+"0","     pch = 16, col= ""cyan"")"

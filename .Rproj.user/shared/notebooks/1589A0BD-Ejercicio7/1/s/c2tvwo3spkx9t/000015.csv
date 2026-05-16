@@ -1,0 +1,3 @@
+"0",""
+"0","S_gg_list <- summary(mod_gg, t = t_seq, type = ""survival"", ci = FALSE)"
+"0","lines(t_seq, S_gg_list[[1]]$est, col = ""darkgreen"", lwd = 2, lty = 2)"

@@ -1,0 +1,76 @@
+------------------------------------------------------------------------
+
+---
+title: "ejercicio4"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Contenido"
+  pdf:
+    toc: false
+editor: visual
+---
+
+(c) **Para un valor de μ fijo (e.g. μ = 0) grafica la funcíon de riesgo para** $\sigma^2$**\< 1,** $\sigma^2$**= 1 y** $\sigma^2$ **\> 1. ¿Ćomo se comporta la función para tu elección de parametros?**
+
+```{r}
+#| message: false
+#| warning: false
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(flexsurv)
+
+t_seq <- seq(0.01, 10, length.out = 500)
+
+#calcular el riesgo directo con hlnorm() para cada valor de mu
+df_d <- data.frame(
+  t = t_seq,
+  "mu == 0" = hlnorm(t_seq, meanlog = 0, sdlog = sqrt(1)), # mu < 1
+  "mu == 1" = hlnorm(t_seq, meanlog = 1, sdlog = sqrt(1)), # mu = 1
+  "mu == 2" = hlnorm(t_seq, meanlog = 2, sdlog = sqrt(1)), # mu > 1
+  check.names = FALSE
+) %>% pivot_longer(-t, names_to = "Parametros", values_to = "Riesgo")
+
+# graficamos
+ggplot(df_d, aes(x = t, y = Riesgo, color = Parametros)) +
+  geom_line(linewidth = 1) +
+  coord_cartesian(ylim = c(0, 1.5)) + 
+  labs(title = expression("Función de riesgo log-normal  ("*sigma^2==1*")"),
+       x = "t", y = "h(t)", color = NULL) +
+  scale_color_manual(values = c("#d62728", "#9467bd", "#8c564b"),
+                     labels = scales::parse_format()) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "top", plot.title = element_text(hjust = 0.5))
+```
+
+Viendo la gráfica, se ve que la curva siempre sube hasta un pico (que es el momento de mas riesgo) y luego va bajando suavemente.
+
+Lo mas notorio para los parámetros es que cuando haces $\sigma^2$ más grande, ese pico se adelanta. O sea, el momento crítico llega mas rapido en el tiempo. Pero a la vez, la curva se hace más asimetrica y plana del lado derecho. Esto significa que aunque el golpe de riesgo llegue antes, se queda embarrado o repartido por mas tiempo en lugar de concentrarse en un solo instante cortito.
+
+(d) **Para un valor de** $\sigma^2$ **fijo (e.g.** $\sigma^2$ **= 1) grafica la funcíon de riesgo para μ \< 1, μ = 1 y μ \> 1. ¿Ćomo se comporta la función para tu elección de parametro?**
+
+```{r}
+#calcular el riesgo directo con hlnorm() para cada valor de mu
+df_d <- data.frame(
+  t = t_seq,
+  "mu == -1" = hlnorm(t_seq, meanlog = -1, sdlog = sqrt(1)), # mu < 1
+  "mu== 1"  = hlnorm(t_seq, meanlog = 1,  sdlog = sqrt(1)), # mu = 1
+  "mu == 2"  = hlnorm(t_seq, meanlog = 2,  sdlog = sqrt(1)), # mu > 1
+  check.names = FALSE 
+) %>% pivot_longer(-t, names_to = "Parametros", values_to = "Riesgo")
+
+# Gráfica 
+ggplot(df_d, aes(x = t, y = Riesgo, color = Parametros)) +
+  geom_line(linewidth = 1) +
+  coord_cartesian(ylim = c(0, 1.5)) + 
+  labs(title = expression("Función de riesgo log-normal  ("*sigma^2==1*")"),
+       x = "t", y = "h(t)", color = NULL) +
+  scale_color_manual(values = c("#d62728", "#9467bd", "#8c564b"),
+                     labels = scales::parse_format()) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "top", plot.title = element_text(hjust = 0.5))
+```
+
+En este caso como $\mu$ funciona como un factor de escala para el tiempo, entre mas grande haces este parametro, el pico de riesgo se recorre muchisimo hacia la derecha. Basicamente el evento o la falla tarda mucho mas en llegar. Además, las curvas se van haciendo cada vez mas chaparritas por así decirlo. Como estas estirando todo sobre la línea de tiempo, el nível de riesgo maxímo se cae bastante, diluyendose a lo largo de todos los períodos y haciendo que la supervivencia en general sea mayor.

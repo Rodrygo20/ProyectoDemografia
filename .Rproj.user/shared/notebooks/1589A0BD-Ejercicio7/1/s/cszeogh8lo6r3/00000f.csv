@@ -1,0 +1,6 @@
+"0","p_valor <- pchisq(estadistico_lambda, df = 1, lower.tail = FALSE)"
+"0","print(p_valor)"
+"1","[1]"
+"1"," 3.789571e-05"
+"1","
+"

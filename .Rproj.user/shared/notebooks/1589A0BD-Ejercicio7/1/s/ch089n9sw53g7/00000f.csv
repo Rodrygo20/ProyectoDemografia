@@ -1,0 +1,2 @@
+"0","mod_exp <- survreg(Surv(datos_tarea$time, datos_tarea$status)~1, data = datos_tarea, dist = ""exponential"")"
+"0","mod_wei <- survreg(Surv(datos_tarea$time, datos_tarea$status)~1, data = datos_tarea, dist = ""weibull"")"
