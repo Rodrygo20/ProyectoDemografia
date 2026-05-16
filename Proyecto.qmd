@@ -1,0 +1,130 @@
+---
+title: "Proyecto Demográfico, Sinaloa"
+author: "Martínez Olivares Rodrigo/ Maxinez Badillo Eduardo"
+date: "2026-02-15"
+format: html
+---
+# 1. Introducción
+Sinaloa, estado ubicado en la región noroeste de México, representa un caso de estudio demográfico de gran relevancia debido a su dinámica económica basada en el sector agroindustrial y su posición estratégica en el corredor del Pacífico. Con una superficie de casi 60,000 km cuadrados. De acuerdo con las proyecciones de la Secretaría General del Consejo Nacional de Población (CONAPO), Sinaloa enfrenta un proceso de transición demográfica caracterizado por una reducción paulatina en las tasas de fecundidad y un incremento en la esperanza de vida.
+En este informe, visualizaremos la estructura por edad y sexo proyectada para el año 2026 utilizando los datos oficiales de la CONAPO
+---
+
+```{r, message=FALSE, morning = FALSE}
+#| message: false
+#| warning: false
+# 1. Remover los objetos
+rm(list = ls())
+
+# 2. Instalar paquetes 
+#install.packages("data.table", 
+                 #dependencies = T)
+#colocamos la libreria}
+library(data.table)
+library(ggplot2)
+library(lubridate)
+library(tidyverse)
+library(kableExtra)
+mort <- fread("https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_Population1JanuaryByAge5GroupSex_Medium.csv.gz")
+apv <- fread("https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_PopulationBySingleAgeSex_Medium_1950-2023.csv.gz")
+# 3. Descargar tablas de datos
+pop <- fread("https://repodatos.atdt.gob.mx/CONAPO/proyecciones/00_Pob_Mitad_1950_2070.csv")
+pop_d <- fread("data.csv")
+# 4. Exploración de la tabla de población
+table(pop$ENTIDAD)
+table(pop$CVE_GEO)
+table(pop$ANIO)
+
+```
+
+```{r}
+SINA <-pop[ENTIDAD== "Sinaloa" & ANIO== "2026", .(SEXO, EDAD, POBLACION)]
+# 1. Preparar datos para el efecto espejo
+SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
+
+# 2. Generar la gráfica con ggplot2
+ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_flip() +
+  scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
+  labs(title = "Estructura Poblacional de Sinaloa (2026)",
+       subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
+       x = "Edad",
+       y = "Población total",
+       fill = "Género") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
+  theme(legend.position = "bottom")
+```
+
+##   
+
+Observando la piramide podemos observar que hay una disminusión en la tasa de natalidad lo que podría representar un reto mayor a futuro en el reemplazo de la fuerza laboral. Pero viendo la parte mas robusta de la piramide podemos decir que Sinaloa se encuentra en una etapa donde la mayor parte de su población está en edad de trabajar, así mismo se puede observar que las barras de las mujeres suelen ser ligeramente más largas en las edades avanzadas lo cual podría indicar una mayor longevidad para las mujeres.
+
+```{r}
+SINA <-pop[ENTIDAD== "Sinaloa" & ANIO== "1970", .(SEXO, EDAD, POBLACION)]
+# 1. Preparar datos para el efecto espejo
+SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
+
+# 2. Generar la gráfica con ggplot2
+ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_flip() +
+  scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
+  labs(title = "Estructura Poblacional de Sinaloa (1970)",
+       subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
+       x = "Edad",
+       y = "Población total",
+       fill = "Género") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
+  theme(legend.position = "bottom")
+```
+Para comparar la tabla del 2026 podemos observr que en la del año 1970 la poblacion era diferente, ya que la población con la edad de 
+
+#Lectura de tabla del mismo proyecto
+```{r}
+deaths <- fread("data.csv")
+```
+##Escritura de funciones 
+```{r}
+x <- c(1,2,3,4,5,6,7,8,9,10)
+
+weight.mean <- function(x, w = rep(1/length(x), length(x))){
+
+  x_mean <- sum(x*w)/sum(w)
+
+  return(x_mean)
+
+}
+
+weight.mean(x)
+```
+##crecimiento exponencial
+
+```{r}
+expo <- function(K_0,K_T, t_0, t_T, t){ 
+  dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0)) 
+  r <- log(K_T/K_0)/dt 
+  h <- t -decimal_date(as.Date(t_0)) 
+  K_h <- K_0 * exp(r*h) 
+  return(K_h)} 
+cre_exp<- expo( K_0=112336538, K_T=126014024, t_0="2010-06-25", t_T="2020-03-15", t=seq(2020.5, 2100.5, 1) ) 
+# Gráfica 
+data.frame(Año = c(decimal_date(as.Date("2010-06-25")), decimal_date(as.Date("2020-03-15")), seq(2020.5, 2100.5, 1)), K_t = c(112336538, 126014024, cre_exp)) %>% 
+ggplot(aes(Año, K_t)) + geom_line() + geom_point()
+
+```
+##Tasas brutas y especifícas
+
+```{r}
+deaths <-  deaths%>%
+  mutate(m_x=D/N)
+plot(x=deaths[location=="Argentina", x], 
+      y=log(deaths[location=="Argentina", m_x]))
+deaths %>% 
+  group_by(location) %>% 
+  summarize(weight.mean(m_x/sum(x)))
+```
+
+
+
