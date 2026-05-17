@@ -1,52 +1,58 @@
 ---
 title: "Proyecto Demográfico, Sinaloa"
-author: "Martínez Olivares Rodrigo/ Maxinez Badillo Eduardo"
+author: "Martínez Olivares Rodrigo / Maxinez Badillo Eduardo"
 date: "2026-02-15"
-format: html
----
-# 1. Introducción
-Sinaloa, estado ubicado en la región noroeste de México, representa un caso de estudio demográfico de gran relevancia debido a su dinámica económica basada en el sector agroindustrial y su posición estratégica en el corredor del Pacífico. Con una superficie de casi 60,000 km cuadrados. De acuerdo con las proyecciones de la Secretaría General del Consejo Nacional de Población (CONAPO), Sinaloa enfrenta un proceso de transición demográfica caracterizado por una reducción paulatina en las tasas de fecundidad y un incremento en la esperanza de vida.
-En este informe, visualizaremos la estructura por edad y sexo proyectada para el año 2026 utilizando los datos oficiales de la CONAPO
+format: pdf
+execute:
+  warning: false
+  message: false
 ---
 
-```{r, message=FALSE, morning = FALSE}
+# Introducción
+Sinaloa, estado ubicado en la región noroeste de México, representa un caso de estudio demográfico de gran relevancia debido a su dinámica económica basada en el sector agroindustrial y su posición estratégica en el corredor del Pacífico. Con una superficie de casi 60,000 km cuadrados. De acuerdo con las proyecciones de la Secretaría General del Consejo Nacional de Población (CONAPO), Sinaloa enfrenta un proceso de transición demográfica caracterizado por una reducción paulatina en las tasas de fecundidad y un incremento en la esperanza de vida.
+En este informe, visualizaremos la estructura por edad y sexo proyectada para el año 2010, 2019 y 2021 utilizando los datos oficiales de la CONAPO
+Este documento construye tablas de vida abreviadas para Sinaloa en 2010, 2019 y 2021 por sexo, usando población proyectada y defunciones observadas. La metodología sigue la lógica de interpolación exponencial para población a mitad de año y tabla de vida abreviada con ajuste de Coale-Demeny para los primeros grupos de edad.
+
+![Diagrama de flujo](diagram.png)
+
+
+```{r}
 #| message: false
 #| warning: false
-# 1. Remover los objetos
+
 rm(list = ls())
 
-# 2. Instalar paquetes 
-#install.packages("data.table", 
-                 #dependencies = T)
-#colocamos la libreria}
 library(data.table)
-library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readxl)
 library(lubridate)
-library(tidyverse)
+library(ggplot2)
+library(knitr)
 library(kableExtra)
-mort <- fread("https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_Population1JanuaryByAge5GroupSex_Medium.csv.gz")
-apv <- fread("https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/CSV_FILES/WPP2024_PopulationBySingleAgeSex_Medium_1950-2023.csv.gz")
-# 3. Descargar tablas de datos
-pop <- fread("https://repodatos.atdt.gob.mx/CONAPO/proyecciones/00_Pob_Mitad_1950_2070.csv")
-pop_d <- fread("data.csv")
-# 4. Exploración de la tabla de población
-table(pop$ENTIDAD)
-table(pop$CVE_GEO)
-table(pop$ANIO)
 
 ```
 
+La información referente al volumen poblacional se extrajo del Consejo Nacional de Población (CONAPO), específicamente de las Proyecciones de la Población de México y de las Entidades Federativas, 1950-2070. 
+Se filtraron los datos para la entidad federativa de Sinaloa, desglosados por edades desplegadas (año por año, de 0 a 85 y más) y sexo (Hombres y Mujeres).
+Se descargaron los tabulados correspondientes a los años 2010, 2011, 2019, 2020, 2021 y 2022. Dado que estas proyecciones están referenciadas al inicio del año calendario (1 de enero), fue necesario aplicar un algoritmo para interpolar la población a la mitad del año. Este calculo central permite obtener la poblaci{on expuesta al riesgo.
+
+Los datos de mortalidad provienen del Instituto Nacional de Estadística y Geografía (INEGI), bajo el apartado de Estadísticas de Defunciones Registradas.
+Se obtuvieron las bases de datos de defunciones ocurridas en Sinaloa, desglosadas por edad y sexo.
+Previo al cruce con las bases de población, se determinaron las defunciones de los menores de 1 a 4 años en un solo grupo etario, respetando la estructura matemática requerida por la tabla de vida abreviada y las correcciones de Coale-Demeny.
+
+
 ```{r}
-SINA <-pop[ENTIDAD== "Sinaloa" & ANIO== "2026", .(SEXO, EDAD, POBLACION)]
-# 1. Preparar datos para el efecto espejo
+pob <- fread("Proy_pob.csv")
+SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2010", .(SEXO, EDAD, POBLACION)]
+
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
 
-# 2. Generar la gráfica con ggplot2
 ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
   geom_bar(stat = "identity", width = 1) +
   coord_flip() +
   scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
-  labs(title = "Estructura Poblacional de Sinaloa (2026)",
+  labs(title = "Estructura Poblacional de Sinaloa (2010)",
        subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
        x = "Edad",
        y = "Población total",
@@ -56,21 +62,17 @@ ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
   theme(legend.position = "bottom")
 ```
 
-##   
-
-Observando la piramide podemos observar que hay una disminusión en la tasa de natalidad lo que podría representar un reto mayor a futuro en el reemplazo de la fuerza laboral. Pero viendo la parte mas robusta de la piramide podemos decir que Sinaloa se encuentra en una etapa donde la mayor parte de su población está en edad de trabajar, así mismo se puede observar que las barras de las mujeres suelen ser ligeramente más largas en las edades avanzadas lo cual podría indicar una mayor longevidad para las mujeres.
-
 ```{r}
-SINA <-pop[ENTIDAD== "Sinaloa" & ANIO== "1970", .(SEXO, EDAD, POBLACION)]
-# 1. Preparar datos para el efecto espejo
+pob <- fread("Proy_pob.csv")
+SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2019", .(SEXO, EDAD, POBLACION)]
+
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
 
-# 2. Generar la gráfica con ggplot2
 ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
   geom_bar(stat = "identity", width = 1) +
   coord_flip() +
   scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
-  labs(title = "Estructura Poblacional de Sinaloa (1970)",
+  labs(title = "Estructura Poblacional de Sinaloa (2019)",
        subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
        x = "Edad",
        y = "Población total",
@@ -79,52 +81,373 @@ ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
   scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
   theme(legend.position = "bottom")
 ```
-Para comparar la tabla del 2026 podemos observr que en la del año 1970 la poblacion era diferente, ya que la población con la edad de 
 
-#Lectura de tabla del mismo proyecto
+
 ```{r}
-deaths <- fread("data.csv")
+pob <- fread("Proy_pob.csv")
+SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2021", .(SEXO, EDAD, POBLACION)]
+# 1. Preparar datos para el efecto espejo
+SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
+
+# 2. Generar la gráfica con ggplot2
+ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_flip() +
+  scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
+  labs(title = "Estructura Poblacional de Sinaloa (2021)",
+       subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
+       x = "Edad",
+       y = "Población total",
+       fill = "Género") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
+  theme(legend.position = "bottom")
 ```
-##Escritura de funciones 
+Al observar la evolución de las pirámides poblacionales de Sinaloa para los años 2010, 2019 y 2021, vemos que el estado se encuentra atravesando una fase avanzada de su transición demográfica. La comparativa temporal revela tres fenómenos estructurales clave:
+Estrechamiento de la base (Caída de la fecundidad): En la pirámide de 2010, la base (edades de 0 a 10 años) ya mostraba indicios de contracción respecto a las cohortes inmediatamente superiores. 
+Para 2019 y 2021, este estrechamiento es mucho más pronunciado. Esto refleja una disminución sostenida en las tasas de natalidad y fecundidad en el estado durante la última década; cada vez nacen menos niños, lo que reduce el peso relativo de la población infantil frente al total.
+Ensanchamiento del centro (El bono demográfico):El "abultamiento" de la pirámide, que representa a las generaciones más numerosas, se ha desplazado hacia arriba. En 2010, la mayor concentración de personas se encontraba en las edades jóvenes (15 a 25 años). Para 2019 y 2021, este bloque se ha movido hacia el estrato de los 25 a 39 años. Esto indica que Sinaloa se encuentra en pleno "bono demográfico", donde la proporción de personas en edad de trabajar e insertarse en la fuerza laboral es significativamente mayor que la población dependiente (niños y ancianos).
+Engrosamiento de la parte superior (Envejecimiento poblacional):Al comparar la cima de la pirámide de 2010 con las de 2019 y 2021, se observa un ligero pero constante ensanchamiento en los grupos de 60 años y más. Esto es una consecuencia directa del aumento en la esperanza de vida al nacer ($e_0$) y la supervivencia en edades avanzadas. La población sinaloense está envejeciendo, un fenómeno que, desde la perspectiva actuarial, impone retos importantes a largo plazo para los sistemas de salud y el fondeo de pensiones en la entidad.
+##
+
+Ahora para el cálculo de las tasas de mortalidad requiere conocer el volumen exacto de población expuesta al riesgo de morir durante un año calendario. Dado que los censos y proyecciones suelen darse al 1 de enero o en fechas censales específicas, se debe estimar la población a mitad de año (1 de julio, $t = x.5$). Esta población central asume el rol de los Años Persona Vividos (APV) de la población real.
+
+Una vez obtenido el numerador (defunciones observadas $D_x$) y el denominador (APV o $N_x$), se calcula la tasa central de mortalidad:$$m_x = \frac{D_x}{N_x}$$Posteriormente, esta tasa alimenta la tabla de mortalidad abreviada, cuyas columnas se calculan bajo las siguientes expresiones:Factor de separación ($a_x$): Fracción del intervalo vivida, en promedio, por quienes fallecen en él. Para las edades infantiles (0 y 1 a 4 años) se utilizan las reglas empíricas de Coale-Demeny para corregir la asimetría de la mortalidad temprana. Para el resto de las edades, se asume distribución uniforme ($a_x = n/2$).Probabilidad de morir ($q_x$):$$q_x = \frac{n \cdot m_x}{1 + (n - a_x) \cdot m_x}$$Probabilidad de sobrevivir ($p_x$): $p_x = 1 - q_x$Sobrevivientes exactos ($l_x$): Partiendo de una raíz (radix) de $l_0 = 100,000$, decrece según: $l_{x+n} = l_x \cdot p_x$Defunciones de la tabla ($d_x$): $d_x = l_x - l_{x+n}$Años persona vividos en el intervalo ($L_x$): $L_x = n \cdot l_{x+n} + a_x \cdot d_x$Años persona vividos acumulados ($T_x$): Total de años que le restan por vivir a la cohorte desde la edad $x$: $T_x = \sum_{i=x}^{\omega} L_i$Esperanza de vida ($e_x$): Promedio de años adicionales que se espera viva una persona de edad $x$:$$e_x = \frac{T_x}{l_x}$$
+
 ```{r}
-x <- c(1,2,3,4,5,6,7,8,9,10)
-
-weight.mean <- function(x, w = rep(1/length(x), length(x))){
-
-  x_mean <- sum(x*w)/sum(w)
-
-  return(x_mean)
-
+expo <- function(K_0, K_T, t_0, t_T, t){ 
+  dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0)) 
+  r <- log(K_T / K_0) / dt 
+  h <- t - decimal_date(as.Date(t_0)) 
+  K_h <- K_0 * exp(r * h) 
+  return(K_h)
 }
 
-weight.mean(x)
+grupo_edad <- function(x){
+  x <- suppressWarnings(as.numeric(x))
+  dplyr::case_when(
+    is.na(x) ~ NA_character_,
+    x == 0 ~ "0",
+    x >= 1  & x <= 4  ~ "1-4",
+    x >= 5  & x <= 9  ~ "5-9",
+    x >= 10 & x <= 14 ~ "10-14",
+    x >= 15 & x <= 19 ~ "15-19",
+    x >= 20 & x <= 24 ~ "20-24",
+    x >= 25 & x <= 29 ~ "25-29",
+    x >= 30 & x <= 34 ~ "30-34",
+    x >= 35 & x <= 39 ~ "35-39",
+    x >= 40 & x <= 44 ~ "40-44",
+    x >= 45 & x <= 49 ~ "45-49",
+    x >= 50 & x <= 54 ~ "50-54",
+    x >= 55 & x <= 59 ~ "55-59",
+    x >= 60 & x <= 64 ~ "60-64",
+    x >= 65 & x <= 69 ~ "65-69",
+    x >= 70 & x <= 74 ~ "70-74",
+    x >= 75 & x <= 79 ~ "75-79",
+    x >= 80 & x <= 84 ~ "80-84",
+    x >= 85 ~ "85+"
+  )
+}
+
+lt_abr <- function(x, mx, sex = "f", IMR = NA) {
+  m <- length(x)
+  n <- c(diff(x), NA)
+  ax <- n / 2
+
+  if (sex == "m") {
+    if (mx[1] >= 0.107) {
+      ax[1] <- 0.330
+    } else {
+      ax[1] <- 0.045 + 2.684 * mx[1]
+    }
+  } else if (sex == "f") {
+    if (mx[1] >= 0.107) {
+      ax[1] <- 0.350
+    } else {
+      ax[1] <- 0.053 + 2.800 * mx[1]
+    }
+  }
+
+  if (m >= 2) {
+    if (sex == "m") {
+      if (mx[1] >= 0.107) {
+        ax[2] <- 1.352
+      } else {
+        ax[2] <- 1.651 - 2.816 * mx[1]
+      }
+    } else if (sex == "f") {
+      if (mx[1] >= 0.107) {
+        ax[2] <- 1.361
+      } else {
+        ax[2] <- 1.522 - 1.518 * mx[1]
+      }
+    }
+  }
+
+  qx <- (n * mx) / (1 + (n - ax) * mx)
+  qx[m] <- 1
+  px <- 1 - qx
+  lx <- 100000 * cumprod(c(1, px[-m]))
+  dx <- c(-diff(lx), lx[m])
+  Lx <- n * c(lx[-1], 0) + ax * dx
+  Lx[m] <- lx[m] / mx[m]
+  Tx <- rev(cumsum(rev(Lx)))
+  ex <- Tx / lx
+
+  return(data.table(x, n, mx, ax, qx, px, lx, dx, Lx, Tx, ex))
+}
 ```
-##crecimiento exponencial
+
+
+Se importan las proyecciones de CONAPO filtradas para la clave geográfica de Sinaloa (25). Usando la función exponencial previamente definida, se proyectan las poblaciones del 1 de enero hacia el 1 de julio para representar fielmente el tiempo de exposición al riesgo poblacional.
 
 ```{r}
-expo <- function(K_0,K_T, t_0, t_T, t){ 
-  dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0)) 
-  r <- log(K_T/K_0)/dt 
-  h <- t -decimal_date(as.Date(t_0)) 
-  K_h <- K_0 * exp(r*h) 
-  return(K_h)} 
-cre_exp<- expo( K_0=112336538, K_T=126014024, t_0="2010-06-25", t_T="2020-03-15", t=seq(2020.5, 2100.5, 1) ) 
-# Gráfica 
-data.frame(Año = c(decimal_date(as.Date("2010-06-25")), decimal_date(as.Date("2020-03-15")), seq(2020.5, 2100.5, 1)), K_t = c(112336538, 126014024, cre_exp)) %>% 
-ggplot(aes(Año, K_t)) + geom_line() + geom_point()
+pob <- fread("Proy_pob.csv")
 
+pob <- pob %>%
+  filter(CVE_GEO == 25,
+         ANIO %in% c(2010, 2011, 2019, 2020, 2021, 2022)) %>%
+  mutate(sex = ifelse(SEXO == "Hombres", "male", "female")) %>%
+  select(year = ANIO, age = EDAD, sex, pop = POBLACION)
+
+get_apv <- function(datos, year_target) {
+  pob0 <- datos %>% filter(year == year_target)
+  pobT <- datos %>% filter(year == year_target + 1)
+
+  resultado <- pob0 %>%
+    left_join(pobT, by = c("age", "sex"), suffix = c("_0", "_T")) %>%
+    rowwise() %>%
+    mutate(N = expo(pop_0, pop_T,
+                    t_0 = paste0(year_target, "-01-01"),
+                    t_T = paste0(year_target + 1, "-01-01"),
+                    t   = year_target + 0.5)) %>%
+    ungroup() %>%
+    select(year = year_0, age, sex, N)
+
+  return(resultado)
+}
+
+apv2010 <- get_apv(pob, 2010)
+apv2019 <- get_apv(pob, 2019)
+apv2021 <- get_apv(pob, 2021)
+
+apv <- bind_rows(apv2010, apv2019, apv2021)
 ```
-##Tasas brutas y especifícas
+
+
+Los registros  de mortalidad suelen presentar sesgos y variaciones atípicas. Para solucionarlo:
+
+Se rescata correctamente a los menores de un año.
+
+Se consolida a los niños de 1 a 4 años para adaptarse al modelo abreviado.
+
+Se promedian defunciones de tres años cercanos a los censos (ej. 2009-2011) para estabilizar la fuerza de la mortalidad observada, a excepción del 2021, que se analiza de forma aislada para capturar el pico pandémico.
+```{r}
+# Defunciones
+
+def_raw <- read_excel("defunciones_sinaloa.xlsx", skip = 7)
+
+names(def_raw) <- c("entidad", "edad", "reg", "ocu", "tot", "m", "f", "ne")
+
+def <- def_raw %>%
+  mutate(
+    reg = suppressWarnings(as.numeric(reg)),
+    ocu = suppressWarnings(as.numeric(ocu)),
+    m = suppressWarnings(as.numeric(m)),
+    f = suppressWarnings(as.numeric(f)),
+    
+    
+    age_temp = ifelse(grepl("Menores|menores", as.character(edad)), "0", as.character(edad)),
+    
+    age_num = suppressWarnings(as.numeric(gsub("^[^0-9]*([0-9]+).*$", "\\1", age_temp))),
+    
+    
+    age_num = ifelse(age_num %in% 1:4, 1, age_num)
+  ) %>%
+  filter(
+    !is.na(ocu),
+    ocu %in% c(2009, 2010, 2011, 2018, 2019, 2021),
+    !is.na(reg),
+    edad != "Total", # Filtramos la basura de la columna correcta
+    !grepl("No especificado", edad, ignore.case = TRUE),
+    !is.na(age_num)
+  ) %>%
+  select(age = age_num, year_orig = ocu, reg, m, f) %>%
+  pivot_longer(cols = c(m, f), names_to = "sex", values_to = "deaths") %>%
+  mutate(
+    sex = ifelse(sex == "m", "male", "female"),
+    deaths = replace_na(deaths, 0)
+  ) %>%
+  
+  group_by(year_orig, age, sex) %>%
+  summarise(deaths = sum(deaths, na.rm = TRUE), .groups = "drop") %>%
+
+  mutate(
+    year = ifelse(year_orig %in% 2009:2011, 2010,
+                  ifelse(year_orig %in% 2018:2019, 2019, year_orig))
+  ) %>%
+  
+  group_by(year, age, sex) %>%
+  summarise(deaths = mean(deaths, na.rm = TRUE), .groups = "drop")
+```
+
+Se agrupan el APV y las defunciones bajo una estructura de factores estricta. Al unir las bases, se obtiene el numerador y denominador necesarios para calcular las tasas específicas de mortalidad ($m_x$) de cada subgrupo poblacional.
 
 ```{r}
-deaths <-  deaths%>%
-  mutate(m_x=D/N)
-plot(x=deaths[location=="Argentina", x], 
-      y=log(deaths[location=="Argentina", m_x]))
-deaths %>% 
-  group_by(location) %>% 
-  summarize(weight.mean(m_x/sum(x)))
+apv_abr <- apv %>%
+  mutate(age = grupo_edad(age)) %>%
+  filter(!is.na(age)) %>%
+  group_by(year, sex, age) %>%
+  summarise(N = sum(N, na.rm = TRUE), .groups = "drop")
+
+def_abr <- def %>%
+  mutate(age = grupo_edad(age)) %>%
+  filter(!is.na(age)) %>%
+  group_by(year, sex, age) %>%
+  summarise(deaths = sum(deaths, na.rm = TRUE), .groups = "drop")
+
+niveles_edad <- c("0", "1-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
+                  "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69",
+                  "70-74", "75-79", "80-84", "85+")
+
+edad_inicio <- c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85)
 ```
 
 
 
+```{r}
+lt_input <- left_join(apv_abr, def_abr, by = c("year", "sex", "age")) %>%
+  mutate(
+    deaths = replace_na(deaths, 0),
+    # Previene infinitos sin borrar la fila, asegurando que temp tenga los 19 renglones
+    N = ifelse(is.na(N) | N == 0, 1, N), 
+    mx = deaths / N,
+    age = factor(age, levels = niveles_edad)
+  ) %>%
+  arrange(sex, year, age)
+
+```
+
+A través de un proceso iterativo, se calculan las 6 tablas de vida resultantes. Cada tabla procesa las 19 filas de edad inicial para obtener todas las funciones de supervivencia.
+
+```{r}
+lt_output <- data.table()
+
+for(s in c("male", "female")){
+  for(y in c(2010, 2019, 2021)){
+
+    temp <- lt_input %>%
+      filter(sex == s, year == y) %>%
+      arrange(age)
+
+    sex_fun <- ifelse(s == "male", "m", "f")
+
+    temp_lt <- lt_abr(
+      x = edad_inicio,
+      mx = temp$mx,
+      sex = sex_fun
+    ) %>%
+      as.data.table()
+
+    temp_lt[, year := y]
+    temp_lt[, sex := sex_fun]
+
+    lt_output <- rbind(
+      lt_output,
+      temp_lt[, .(
+        lt_desc = "LT VR/Census, MEX",
+        year,
+        sex,
+        age = x,
+        mx = round(mx, 6),
+        qx = round(qx, 6),
+        ax = round(ax, 2),
+        lx = round(lx, 0),
+        dx = round(dx, 0),
+        Lx = round(Lx, 0),
+        Tx = round(Tx, 0),
+        ex = round(ex, 2)
+      )]
+    )
+  }
+}
+
+```
+
+Esperanza de vida al nacer resume las condiciones de salud y el nivel general de mortalidad de la entidad. Representa el horizonte de vida estadístico para un recién nacido bajo los riesgos transversales del año de estudio.
+
+```{r}
+resumen_e0 <- lt_output %>%
+  as_tibble() %>%
+  filter(age == 0) %>%
+  select(year, sex, ex) %>%
+  pivot_wider(names_from = sex, values_from = ex)
+
+kable(resumen_e0, caption = "Esperanza de vida al nacer por sexo y año")
+```
+
+En esta sección se presenta el tabulado final que integra las tablas de mortalidad abreviadas para Sinaloa (2010, 2019 y 2021) desglosadas por sexo. Esta matriz consolida el output del algoritmo iterativo y sirve como la herramienta principal para el análisis transversal de la supervivencia en el estado.
+
+A través de esta tabla, es posible rastrear el historial de vida de la cohorte ficticia, observando variables críticas como la caída de los sobrevivientes ($l_x$), la concentración de las defunciones ($d_x$) y la expectativa de vida restante ($e_x$) en cada etapa del ciclo vital.
+
+```{r}
+kable(lt_output, caption = "Tabla de Vida Sinaloa") %>%
+  kable_styling(latex_options = c("repeat_header", "scale_down"), font_size = 8)
+```
+
+# Gráficas
+
+```{r}
+# Defunciones por edad y sexo
+
+def_abr_plot <- def_abr %>%
+  mutate(age = factor(age, levels = niveles_edad)) 
+
+ggplot(def_abr_plot, aes(x = age, y = deaths, color = sex, group = sex)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~year) +
+  labs(title = "Defunciones por edad y sexo en Sinaloa",
+       x = "Grupo de edad", y = "Promedio de defunciones", color = "Sexo") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+# Evolución de mx
+
+ggplot(lt_output %>% as_tibble(), aes(x = age, y = log(mx), color = factor(year), group = year)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~sex) +
+  labs(title = "Evolución de la tasa de mortalidad en Sinaloa",
+       x = "Edad inicial del grupo", y = "log(mx)", color = "Año") +
+  theme_minimal()
+```
+```{r}
+#  Curva de Esperanza de Vida (ex)
+
+# Forzamos el orden de las edades para que la gráfica no haga saltos raros
+lt_output_plot <- lt_output %>%
+  as_tibble() %>%
+  mutate(age = factor(age, levels = edad_inicio))
+
+ggplot(lt_output_plot, aes(x = age, y = ex, color = factor(year), group = year)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~sex, labeller = as_labeller(c("m" = "Hombres", "f" = "Mujeres"))) +
+  labs(title = "Curva de Esperanza de Vida (ex) en Sinaloa",
+       subtitle = "Comparativa temporal 2010 vs 2019 vs 2021",
+       x = "Edad exacta cumplida (x)", 
+       y = "Años adicionales de vida (ex)", 
+       color = "Año") +
+  theme_minimal() +
+  scale_color_manual(values = c("2010" = "#1b9e77", "2019" = "#d95f02", "2021" = "#7570b3")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+A partir de los indicadores biométricos obtenidos en las tablas de vida abreviadas, el análisis de la mortalidad en el estado de Sinaloa revela una transición demográfica interrumpida por un evento epidemiológico sin precedentes. La comparativa de los años 2010, 2019 y 2021 permite aislar las tendencias históricas estructurales frente al choque  provocado por el virus SARS-CoV-2
+Durante la década previa a la pandemia, Sinaloa exhibió un comportamiento típico de un estado en fase avanzada de transición epidemiológica. La esperanza de vida al nacer ($e_0$) mostró una estabilización, reflejando avances en la contención de enfermedades infecciosas y la reducción de la mortalidad infantil (como se observa en la caída de las tasas $m_0$ y $m_1$).Sin embargo, el análisis por sexo revela una particularidad histórica profunda en la entidad: la sobremortalidad masculina en edades jóvenes. Al observar las gráficas de evolución de la tasa central de mortalidad ($log(m_x)$), se aprecia una clara "joroba" (sobresalto en la curva) en el grupo de hombres de 15 a 29 años, la cual no está presente en la curva femenina. Este fenómeno atípico, persistente tanto en 2010 como en 2019, se explica por la alta incidencia de muertes por causas externas (accidentes y homicidios) que caracterizan el perfil de riesgo de la región.
+El  COVID-19 (2021) en el año 2021 marca una disrupción total en la biometría del estado. Las gráficas de distribución de defunciones evidencian un exceso de mortalidad masivo que rompe con la suavidad de las curvas históricas.A diferencia de la mortalidad por causas externas que afecta a los jóvenes, la letalidad del COVID-19 alteró drásticamente el patrón de supervivencia en la adultez y la senectud. Al analizar las tasas $m_x$ de 2021, se observa un incremento  del riesgo de muerte a partir del grupo de 40-44 años, alcanzando picos severos en los mayores de 60 años.
+Al reducirse drásticamente los individuos vivos en estas edades, se mermó de forma severa el total de Años Persona Vividos restantes para la cohorte ($T_x$).Como resultado directo, la esperanza de vida al nacer ($e_0$) en 2021 sufrió un retroceso. Los años de ganancia en supervivencia que al estado le tomó más de una década consolidar, se perdieron en un solo año calendario. Asimismo, la pandemia acentuó la brecha de género: dado que biológica y socialmente la letalidad por complicaciones de COVID-19 afectó en mayor proporción a los varones sinaloenses, el retroceso en la $e_x$ masculina fue visiblemente más agudo que el impacto observado en la población femenina 
+Como conclusión los resultados de este modelo demuestran que, si bien Sinaloa posee una estructura poblacional con un mayor concentración en edades económicamente activas, su perfil de mortalidad es altamente vulnerable tanto a riesgos sociales crónicos (causas externas en jóvenes) como a crisis sanitarias. Las tablas de mortalidad construidas para 2021 son un testimonio cuantitativo del impacto de la pandemia, recordando que la esperanza de vida no es una garantía monótona y ascendente, sino un indicador dinámico sujeto a diveros factores.
