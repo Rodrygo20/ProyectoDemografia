@@ -462,13 +462,12 @@ ggplot(lt_output %>% as_tibble(), aes(x = age, y = log(mx), color = factor(year)
   labs(title = "Evolución de la tasa de mortalidad en Sinaloa",
        x = "Edad inicial del grupo", y = "log(mx)", color = "Año") +
   theme_minimal()
-# Pégalo al final de la gráfica de log(mx)
-ggsave("evolucion_mortalidad_mx_sinaloa.png", width = 8, height = 5, dpi = 300)
+
+ggsave("mortalidad_mx_sinaloa.png", width = 8, height = 5, dpi = 300)
 ```
 ```{r}
 #  Curva de Esperanza de Vida (ex)
 
-# Forzamos el orden de las edades para que la gráfica no haga saltos raros
 lt_output_plot <- lt_output %>%
   as_tibble() %>%
   mutate(age = factor(age, levels = edad_inicio))
@@ -485,8 +484,9 @@ ggplot(lt_output_plot, aes(x = age, y = ex, color = factor(year), group = year))
   theme_minimal() +
   scale_color_manual(values = c("2010" = "#1b9e77", "2019" = "#d95f02", "2021" = "#7570b3")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# Pégalo al final de la gráfica de líneas de ex
+
 ggsave("curva_esperanza_vida_ex.png", width = 8, height = 5, dpi = 300)
+
 ```
 
 A partir de los indicadores biométricos obtenidos en las tablas de vida abreviadas, el análisis de la mortalidad en el estado de Sinaloa revela una transición demográfica interrumpida por un evento epidemiológico sin precedentes. La comparativa de los años 2010, 2019 y 2021 permite aislar las tendencias históricas estructurales frente al choque  provocado por el virus SARS-CoV-2.
