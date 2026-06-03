@@ -25,7 +25,7 @@ En conjunto, el informe permite observar tres dimensiones centrales de la dinám
 
 
 
-![Diagrama de flujo](diagram.png)
+![Diagrama de flujo](Graficas/Diagrama.png)
 ```{r}
 #| message: false
 #| warning: false
@@ -57,7 +57,7 @@ La misma lógica de fuentes y procesamiento se aplicó a los demás apartados de
 
 
 ```{r}
-pob <- fread("Proy_pob.csv")
+pob <- fread("data/Proy_pob.csv")
 SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2010", .(SEXO, EDAD, POBLACION)]
 
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
@@ -75,11 +75,11 @@ theme_minimal() +
 scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
 theme(legend.position = "bottom")
 # Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
-ggsave("piramides_poblacionales_sinaloa2010.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/piramides_poblacionales_sinaloa2010.png", width = 8, height = 5, dpi = 300)
 ```
 
 ```{r}
-pob <- fread("Proy_pob.csv")
+pob <- fread("data/Proy_pob.csv")
 SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2019", .(SEXO, EDAD, POBLACION)]
 
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
@@ -97,12 +97,12 @@ theme_minimal() +
 scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
 theme(legend.position = "bottom")
 # Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
-ggsave("piramides_poblacionales_sinaloa2019.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/piramides_poblacionales_sinaloa2019.png", width = 8, height = 5, dpi = 300)
 ```
 
 
 ```{r}
-pob <- fread("Proy_pob.csv")
+pob <- fread("data/Proy_pob.csv")
 SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2021", .(SEXO, EDAD, POBLACION)]
 # 1. Preparar datos para el efecto espejo
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
@@ -121,7 +121,7 @@ theme_minimal() +
 scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
 theme(legend.position = "bottom")
 # Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
-ggsave("piramides_poblacionales_sinaloa2021.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/piramides_poblacionales_sinaloa2021.png", width = 8, height = 5, dpi = 300)
 ```
 Al observar la evolución de las pirámides poblacionales de Sinaloa para los años 2010, 2019 y 2021, vemos que el estado se encuentra atravesando una fase avanzada de su transición demográfica. La comparativa temporal revela tres fenómenos estructurales clave:
 
@@ -305,7 +305,7 @@ return(data.table(x, n, mx, ax, qx, px, lx, dx, Lx, Tx, ex))
 Se importan las proyecciones de CONAPO filtradas para la clave geográfica de Sinaloa (25). Usando la función exponencial previamente definida, se proyectan las poblaciones del 1 de enero hacia el 1 de julio para representar fielmente el tiempo de exposición al riesgo poblacional.
 
 ```{r}
-pob <- fread("Proy_pob.csv")
+pob <- fread("data/Proy_pob.csv")
 
 pob <- pob %>%
 filter(CVE_GEO == 25,
@@ -348,7 +348,7 @@ Se promedian defunciones de tres años cercanos a los censos (ej. 2009-2011) par
 ```{r}
 # Defunciones
 
-def_raw <- read_excel("defunciones_sinaloa.xlsx", skip = 7)
+def_raw <- read_excel("data/defunciones_sinaloa.xlsx", skip = 7)
 
 names(def_raw) <- c("entidad", "edad", "reg", "ocu", "tot", "m", "f", "ne")
 
@@ -499,7 +499,7 @@ select(-lt_desc) %>%
 kable(caption = "Tabla de Vida Sinaloa") %>%
 kable_styling(latex_options = c("repeat_header", "scale_down"), font_size = 8)
 
-fwrite(lt_output, "tabla_vida_sinaloa_consolidada.csv")
+fwrite(lt_output, "output/tabla_vida_sinaloa_consolidada.csv")
 ```
 
 # Gráficas
@@ -523,7 +523,7 @@ ggplot(def_abr_plot, aes(x = age, y = deaths, color = sex, group = sex)) +
        x = "Grupo de edad", y = "Promedio de defunciones", color = "Sexo") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-ggsave("grafica_defunciones_sinaloa.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/grafica_defunciones_sinaloa.png", width = 8, height = 5, dpi = 300)
 ```
 
 ```{r}
@@ -537,7 +537,7 @@ labs(title = "Evolución de la tasa de mortalidad en Sinaloa",
 x = "Edad inicial del grupo", y = "log(mx)", color = "Año") +
 theme_minimal()
 
-ggsave("mortalidad_mx_sinaloa.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/mortalidad_mx_sinaloa.png", width = 8, height = 5, dpi = 300)
 ```
 ```{r}
 # Curva de Esperanza de Vida (ex)
@@ -559,7 +559,7 @@ theme_minimal() +
 scale_color_manual(values = c("2010" = "#1b9e77", "2019" = "#d95f02", "2021" = "#7570b3")) +
 theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("curva_esperanza_vida_ex.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/curva_esperanza_vida_ex.png", width = 8, height = 5, dpi = 300)
 
 ```
 
@@ -657,7 +657,7 @@ Se carga la base de homicidios correspondiente a 2019 y se realiza una limpieza 
 
 ```{r}
 
-homi_raw <- read_excel("homicidios.xlsx", skip = 8, col_names = FALSE)
+homi_raw <- read_excel("data/homicidios.xlsx", skip = 8, col_names = FALSE)
 
 
 names(homi_raw) <- c("edad", "tot", "m", "f", "ne")
@@ -764,6 +764,7 @@ kable_styling(
 latex_options = c("repeat_header"),
 font_size = 8
 )
+fwrite(lt_ce_output, "output/Tabla de Vida de Causa Eliminada_sinaloa2019.csv")
 
 ```
 
@@ -799,10 +800,10 @@ color = "Sexo"
 ) +
 theme_minimal()
 
-ggsave("causa_eliminada_homicidios_sinaloa2019.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/causa_eliminada_homicidios_sinaloa2019.png", width = 8, height = 5, dpi = 300)
 
-# Exportar
-fwrite(lt_ce_output, "tabla_causa_eliminada_homicidios_sinaloa2019.csv")
+
+fwrite(lt_ce_output, "output/tabla_esperanza_causa_eliminada_homicidios_sinaloa2019.csv")
 ```
 
 
@@ -830,7 +831,7 @@ x = NULL, y = "e0", fill = NULL) +
 theme_minimal() +
 theme(legend.position = "bottom")
 
-ggsave("output/grafica_e0_homicidios.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/grafica_e0_homicidios.png", width = 8, height = 5, dpi = 300)
 ```
 La esperanza de vida al nacer es mayor en mujeres que en hombres en ambos escenarios. En los hombres, la eliminación de homicidios incrementa la esperanza de vida de 74.69 a 76.32 años, mientras que en mujeres el aumento es mucho menor, de 81.62 a 81.73 años. Esto muestra que los homicidios tienen un impacto claramente más fuerte sobre la mortalidad masculina
 
@@ -863,7 +864,7 @@ color = NULL
 ) +
 theme_minimal()
 
-ggsave("output/grafica_qx_log_homicidios.png", width = 10, height = 5, dpi = 300)
+ggsave("Graficas/grafica_qx_log_homicidios.png", width = 10, height = 5, dpi = 300)
 ```
 La probabilidad de morir es más alta cuando se incluyen los homicidios, especialmente en edades jóvenes y adultas jóvenes, la diferencia entre el escenario original y el escenario sin homicidios es más marcada en hombres que en mujeres, lo que confirma que esta causa tiene un peso desproporcionado sobre la mortalidad masculina. 
 La escala logarítmica permite observar con mayor claridad estas diferencias a lo largo de todo el ciclo de vida.
@@ -888,9 +889,8 @@ Finalmente, se genera una gráfica de barras y otra de líneas para comparar vis
 ```{r}
 dir.create("output", showWarnings = FALSE)
 
-# -------------------------
-# Funciones auxiliares
-# -------------------------
+
+
 expo <- function(K_0, K_T, t_0, t_T, t){
   dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0))
   r <- log(K_T / K_0) / dt
@@ -916,10 +916,10 @@ grupo_edad_fec <- function(x){
 
 K <- 100 / (100 + 105)
 
-# -------------------------
+
 # Población
-# -------------------------
-pob <- fread("Proy_pob.csv")
+
+pob <- fread("data/Proy_pob.csv")
 
 pob_sin <- pob %>%
   filter(ENTIDAD == "Sinaloa", ANIO %in% c(2010, 2011, 2019, 2020)) %>%
@@ -955,9 +955,9 @@ apv2010 <- get_apv(pob_sin, 2010)
 apv2019 <- get_apv(pob_sin, 2019)
 apv <- bind_rows(apv2010, apv2019)
 
-# -------------------------
+
 # Nacimientos desde Excel
-# -------------------------
+
 read_births_row <- function(file, year_target){
 
   b <- read_excel(file, skip = 5, col_names = TRUE)
@@ -965,7 +965,6 @@ read_births_row <- function(file, year_target){
   # Limpieza de nombres
   names(b) <- trimws(names(b))
 
-  # Buscar la fila de Sinaloa
   fila <- b %>%
     filter(grepl("Sinaloa", as.character(.[[2]])) | grepl("^25$", as.character(.[[1]])))
 
@@ -992,13 +991,13 @@ read_births_row <- function(file, year_target){
   out
 }
 
-b2010 <- read_births_row("Nacimientos_2010.xlsx", 2010)
-b2019 <- read_births_row("Nacimientos_2019.xlsx", 2019)
+b2010 <- read_births_row("data/Nacimientos_2010.xlsx", 2010)
+b2019 <- read_births_row("data/Nacimientos_2019.xlsx", 2019)
 births <- bind_rows(b2010, b2019)
 
-# -------------------------
+
 # Población femenina reproductiva
-# -------------------------
+
 pob_fem <- pob_sin %>%
   filter(sex == "female") %>%
   mutate(age_fec = grupo_edad_fec(age)) %>%
@@ -1006,9 +1005,9 @@ pob_fem <- pob_sin %>%
   group_by(year, age = age_fec) %>%
   summarise(pop_fem = sum(pop, na.rm = TRUE), .groups = "drop")
 
-# -------------------------
+
 # Tabla intermedia fecundidad
-# -------------------------
+
 fec <- births %>%
   left_join(pob_fem, by = c("year", "age")) %>%
   mutate(
@@ -1017,9 +1016,9 @@ fec <- births %>%
     fx5_fem = fx5 * K
   )
 
-# -------------------------
+
 # TGF y TBR
-# -------------------------
+
 res_tfg_tbr <- fec %>%
   group_by(year) %>%
   summarise(
@@ -1029,9 +1028,9 @@ res_tfg_tbr <- fec %>%
   ) %>%
   mutate(TBR_check = TGF * K)
 
-# -------------------------
+
 # Tabla de vida femenina para TNR
-# -------------------------
+
 lt_fem <- lt_output %>%
   as_tibble() %>%
   filter(sex == "f", age %in% c(15, 20, 25, 30, 35, 40, 45)) %>%
@@ -1052,22 +1051,22 @@ tnr_tbl <- fec %>%
     .groups = "drop"
   )
 
-# -------------------------
+
 # Resumen final
-# -------------------------
+
 resumen <- res_tfg_tbr %>%
   left_join(tnr_tbl, by = "year") %>%
   arrange(year)
 
-print(resumen)
+
 kable(resumen, digits = 4, caption = "TGF, TBR y TNR de Sinaloa")
 
 fwrite(resumen, "output/tgf_tbr_tnr_sinaloa.csv")
 fwrite(fec, "output/tabla_intermedia_fecundidad_sinaloa.csv")
 
-# -------------------------
+
 # Gráfica
-# -------------------------
+
 graf <- resumen %>%
   pivot_longer(cols = c(TGF, TBR, TNR), names_to = "medida", values_to = "valor")
 
@@ -1077,7 +1076,7 @@ ggplot(graf, aes(x = factor(year), y = valor, fill = medida)) +
   theme_minimal() +
   theme(legend.position = "bottom")
 
-ggsave("output/tgf_tbr_tnr_sinaloa.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/tgf_tbr_tnr_sinaloa.png", width = 8, height = 5, dpi = 300)
 ```
 Entre 2010 y 2019, Sinaloa presentó una reducción en sus medidas sintéticas de fecundidad. La TGF descendió de 1.85 a 1.51, mientras que la TBR y la TNR también disminuyeron, de 0.904 a 0.738 y de 0.890 a 0.727, respectivamente. Esto refleja una caída del nivel general de fecundidad y una menor capacidad de reemplazo generacional en el estado.
 
@@ -1106,7 +1105,7 @@ ggplot(graf_comp, aes(x = year, y = valor, color = medida, group = medida)) +
     plot.title = element_text(face = "bold")
   )
 
-ggsave("output/grafica_tgf_tbr_tnr_linea_sinaloa.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/grafica_tgf_tbr_tnr_linea_sinaloa.png", width = 8, height = 5, dpi = 300)
 
 ```
 
@@ -1115,9 +1114,9 @@ En esta sección se calcula la tasa específica de fecundidad de Sinaloa para 20
 ```{r}
 dir.create("output", showWarnings = FALSE)
 
-# -----------------------
+
 # Funciones
-# -----------------------
+
 grupo_edad_fec <- function(x){
   x <- suppressWarnings(as.numeric(x))
   case_when(
@@ -1132,10 +1131,10 @@ grupo_edad_fec <- function(x){
   )
 }
 
-# -----------------------
+
 # Nacimientos Sinaloa 2019
-# -----------------------
-b <- read_excel("nacimientos_2019.xlsx", skip = 5, col_names = TRUE)
+
+b <- read_excel("data/nacimientos_2019.xlsx", skip = 5, col_names = TRUE)
 
 fila <- b %>%
   filter(grepl("Sinaloa", as.character(.[[2]])) | grepl("^25$", as.character(.[[1]]))) %>%
@@ -1155,10 +1154,10 @@ nac_sin <- tibble(
   )
 )
 
-# -----------------------
+
 # Población femenina Sinaloa 2019
-# -----------------------
-pob <- fread("Proy_pob.csv")
+
+pob <- fread("data/Proy_pob.csv")
 
 pob_fem <- pob %>%
   filter(ENTIDAD == "Sinaloa", ANIO == 2019, SEXO == "Mujeres") %>%
@@ -1167,9 +1166,9 @@ pob_fem <- pob %>%
   group_by(year = ANIO, edad) %>%
   summarise(poblacion_fem = sum(POBLACION, na.rm = TRUE), .groups = "drop")
 
-# -----------------------
+
 # TEF
-# -----------------------
+
 tef_sin <- nac_sin %>%
   left_join(pob_fem, by = c("year", "edad")) %>%
   mutate(
@@ -1188,7 +1187,7 @@ library(tidyr)
 library(readxl)
 library(ggplot2)
 
-path_wpp <- "WPP2024_FERT_F02_FERTILITY_RATES_BY_5-YEAR_AGE_GROUPS_OF_MOTHER.xlsx"
+path_wpp <- "data/WPP2024_FERT_F02_FERTILITY_RATES_BY_5-YEAR_AGE_GROUPS_OF_MOTHER.xlsx"
 
 
 wpp <- read_excel(path_wpp, sheet = "Estimates", skip = 16)
@@ -1228,7 +1227,7 @@ ggplot(graf, aes(x = edad, y = tef, color = pais, group = pais)) +
   theme_minimal() +
   theme(legend.position = "bottom")
 
-ggsave("output/tef_sinaloa_mexico_italia_2019.png", width = 8, height = 5, dpi = 300)
+ggsave("Graficas/tef_sinaloa_mexico_italia_2019.png", width = 8, height = 5, dpi = 300)
 ```
 La gráfica muestra diferencias claras en el calendario de la fecundidad entre los tres casos, aunque con un patrón común: la mayor intensidad de nacimientos se concentra en las edades adultas jóvenes, sobre todo entre los 20 y 34 años. Eso significa que, en 2019, la fecundidad no estaba distribuida de manera uniforme a lo largo de toda la vida reproductiva, sino que se concentraba en un tramo bastante definido.
 
