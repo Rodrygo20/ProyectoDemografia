@@ -4,24 +4,28 @@ author: "Martínez Olivares Rodrigo / Maxinez Badillo Eduardo"
 date: "2026-02-15"
 format: pdf
 execute:
+  echo: false
   warning: false
   message: false
 ---
 
 # Introducción
-Sinaloa, estado ubicado en la región noroeste de México, representa un caso de estudio demográfico de gran relevancia debido a su dinámica económica basada en el sector agroindustrial y su posición estratégica en el corredor del Pacífico. Con una superficie de casi 60,000 km cuadrados. De acuerdo con las proyecciones de la Secretaría General del Consejo Nacional de Población (CONAPO), Sinaloa enfrenta un proceso de transición demográfica caracterizado por una reducción paulatina en las tasas de fecundidad y un incremento en la esperanza de vida.
+Sinaloa, estado ubicado en la región noroeste de México, representa un caso de estudio demográfico de gran relevancia debido a su dinámica económica basada en el sector agroindustrial y su posición estratégica en el corredor del Pacífico. Con una superficie de casi 60,000 km cuadrados, la entidad ha experimentado un proceso de transición demográfica visible en varios frentes. De acuerdo con las proyecciones de la Secretaría General del Consejo Nacional de Población (CONAPO), Sinaloa presenta una reducción paulatina en las tasas de fecundidad y un incremento en la esperanza de vida.
 
-A nivel estructural, la entidad presenta una  sobremortalidad masculina en edades jóvenes. Este fenómeno está impulsado por factores de riesgo del entorno social, principalmente la alta incidencia de homicidios y accidentes de tránsito, lo que genera una brecha persistente en la esperanza de vida entre hombres y mujeres.
+A nivel estructural, la entidad presenta una sobremortalidad masculina en edades jóvenes. Este fenómeno está impulsado por factores de riesgo del entorno social, principalmente la alta incidencia de homicidios y accidentes de tránsito, lo que genera una brecha persistente en la esperanza de vida entre hombres y mujeres. Además, el impacto de la pandemia de COVID-19 en 2021 ejemplifica cómo un choque epidemiológico severo puede revertir ganancias en la supervivencia humana, afectando de forma desproporcionada a los grupos de mayor edad.
 
-Ademas el impacto de la pandemia de COVID-19 en 2021 ejemplifica cómo un choque epidemiológico severo puede revertir  ganancias en la supervivencia humana, afectando desproporcionadamente a los grupos de mayor edad.
+En este informe, visualizamos la estructura por edad y sexo proyectada para los años 2010, 2019 y 2021 utilizando datos oficiales de CONAPO. Asimismo, se construyen tablas de vida abreviadas para Sinaloa en 2010, 2019 y 2021 por sexo, usando población proyectada y defunciones observadas. La metodología sigue la lógica de interpolación exponencial para población a mitad de año y la tabla de vida abreviada con ajuste de Coale-Demeny para los primeros grupos de edad.
 
-En este informe, visualizaremos la estructura por edad y sexo proyectada para el año 2010, 2019 y 2021 utilizando los datos oficiales de la CONAPO
+De manera complementaria, el trabajo incorpora el análisis de la fecundidad mediante el cálculo de medidas sintéticas como la Tasa Global de Fecundidad (TGF), la Tasa Bruta de Reproducción (TBR) y la Tasa Neta de Reproducción (TNR). Estas medidas permiten observar la disminución de la fecundidad en Sinaloa entre 2010 y 2019, así como comparar su patrón de tasas específicas de fecundidad con el de México e Italia en 2019. Esta comparación muestra diferencias claras en el calendario reproductivo y en el nivel de fecundidad entre contextos subnacionales y nacionales.
 
-Y se construye tablas de vida abreviadas para Sinaloa en 2010, 2019 y 2021 por sexo, usando población proyectada y defunciones observadas. La metodología sigue la lógica de interpolación exponencial para población a mitad de año y tabla de vida abreviada con ajuste de Coale-Demeny para los primeros grupos de edad.
+Por otra parte, se incorporó un análisis de causa eliminada por homicidios para estimar el efecto potencial de retirar esta causa de muerte sobre la esperanza de vida. Los resultados muestran que la eliminación de homicidios tendría un impacto mucho mayor en los hombres que en las mujeres, lo que confirma el peso desproporcionado de la violencia letal sobre la mortalidad masculina. A la vez, la probabilidad de morir por edad revela que el efecto de los homicidios se concentra con mayor intensidad en edades jóvenes y adultas jóvenes, especialmente en la población masculina.
+
+En conjunto, el informe permite observar tres dimensiones centrales de la dinámica demográfica de Sinaloa: la estructura poblacional, la fecundidad y la mortalidad. El análisis integrado de estas dimensiones ofrece una visión más completa del proceso de transición demográfica del estado y de los factores que explican sus cambios recientes.
+
+
+
 
 ![Diagrama de flujo](diagram.png)
-
-
 ```{r}
 #| message: false
 #| warning: false
@@ -39,7 +43,7 @@ library(kableExtra)
 
 ```
 
-La información referente al volumen poblacional se extrajo del Consejo Nacional de Población (CONAPO), específicamente de las Proyecciones de la Población de México y de las Entidades Federativas, 1950-2070. 
+La información referente al volumen poblacional se extrajo del Consejo Nacional de Población (CONAPO), específicamente de las Proyecciones de la Población de México y de las Entidades Federativas, 1950-2070.
 Se filtraron los datos para la entidad federativa de Sinaloa, desglosados por edades desplegadas (año por año, de 0 a 85 y más) y sexo (Hombres y Mujeres).
 
 Se descargaron los tabulados correspondientes a los años 2010, 2011, 2019, 2020, 2021 y 2022. Dado que estas proyecciones están referenciadas al inicio del año calendario (1 de enero), fue necesario aplicar un algoritmo para interpolar la población a la mitad del año. Este calculo central permite obtener la poblaci{on expuesta al riesgo.
@@ -49,6 +53,8 @@ Los datos de mortalidad provienen del Instituto Nacional de Estadística y Geogr
 Se obtuvieron las bases de datos de defunciones ocurridas en Sinaloa, desglosadas por edad y sexo.
 Previo al cruce con las bases de población, se determinaron las defunciones de los menores de 1 a 4 años en un solo grupo etario, respetando la estructura matemática requerida por la tabla de vida abreviada y las correcciones de Coale-Demeny.
 
+La misma lógica de fuentes y procesamiento se aplicó a los demás apartados del trabajo. Para el análisis de fecundidad se utilizaron nacimientos por edad de la madre y población femenina en edad reproductiva, mientras que para la comparación internacional de tasas específicas de fecundidad se recurrió a la base de Naciones Unidas sobre fecundidad por grupos quinquenales de edad. En el caso del análisis de causa eliminada por homicidios, se emplearon las defunciones por causa y edad para estimar el efecto potencial sobre la esperanza de vida.
+
 
 ```{r}
 pob <- fread("Proy_pob.csv")
@@ -57,17 +63,17 @@ SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2010", .(SEXO, EDAD, POBLACION)]
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
 
 ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_flip() +
-  scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
-  labs(title = "Estructura Poblacional de Sinaloa (2010)",
-       subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
-       x = "Edad",
-       y = "Población total",
-       fill = "Género") +
-  theme_minimal() +
-  scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
-  theme(legend.position = "bottom")
+geom_bar(stat = "identity", width = 1) +
+coord_flip() +
+scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
+labs(title = "Estructura Poblacional de Sinaloa (2010)",
+subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
+x = "Edad",
+y = "Población total",
+fill = "Género") +
+theme_minimal() +
+scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
+theme(legend.position = "bottom")
 # Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
 ggsave("piramides_poblacionales_sinaloa2010.png", width = 8, height = 5, dpi = 300)
 ```
@@ -79,17 +85,17 @@ SINA <-pob[ENTIDAD== "Sinaloa" & ANIO== "2019", .(SEXO, EDAD, POBLACION)]
 SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
 
 ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_flip() +
-  scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
-  labs(title = "Estructura Poblacional de Sinaloa (2019)",
-       subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
-       x = "Edad",
-       y = "Población total",
-       fill = "Género") +
-  theme_minimal() +
-  scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
-  theme(legend.position = "bottom")
+geom_bar(stat = "identity", width = 1) +
+coord_flip() +
+scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
+labs(title = "Estructura Poblacional de Sinaloa (2019)",
+subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
+x = "Edad",
+y = "Población total",
+fill = "Género") +
+theme_minimal() +
+scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
+theme(legend.position = "bottom")
 # Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
 ggsave("piramides_poblacionales_sinaloa2019.png", width = 8, height = 5, dpi = 300)
 ```
@@ -103,23 +109,23 @@ SINA[, POBLACION_GRAF := ifelse(SEXO == "Hombres", -POBLACION, POBLACION)]
 
 # 2. Generar la gráfica con ggplot2
 ggplot(SINA, aes(x = EDAD, y = POBLACION_GRAF, fill = SEXO)) +
-  geom_bar(stat = "identity", width = 1) +
-  coord_flip() +
-  scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
-  labs(title = "Estructura Poblacional de Sinaloa (2021)",
-       subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
-       x = "Edad",
-       y = "Población total",
-       fill = "Género") +
-  theme_minimal() +
-  scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
-  theme(legend.position = "bottom")
+geom_bar(stat = "identity", width = 1) +
+coord_flip() +
+scale_y_continuous(labels = function(x) format(abs(x), big.mark = ",")) +
+labs(title = "Estructura Poblacional de Sinaloa (2021)",
+subtitle = "Fuente: Proyecciones CONAPO 1950-2070",
+x = "Edad",
+y = "Población total",
+fill = "Género") +
+theme_minimal() +
+scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
+theme(legend.position = "bottom")
 # Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
 ggsave("piramides_poblacionales_sinaloa2021.png", width = 8, height = 5, dpi = 300)
 ```
 Al observar la evolución de las pirámides poblacionales de Sinaloa para los años 2010, 2019 y 2021, vemos que el estado se encuentra atravesando una fase avanzada de su transición demográfica. La comparativa temporal revela tres fenómenos estructurales clave:
 
-Estrechamiento de la base (Caída de la fecundidad): En la pirámide de 2010, la base (edades de 0 a 10 años) ya mostraba indicios de contracción respecto a las cohortes inmediatamente superiores. 
+Estrechamiento de la base (Caída de la fecundidad): En la pirámide de 2010, la base (edades de 0 a 10 años) ya mostraba indicios de contracción respecto a las cohortes inmediatamente superiores.
 Para 2019 y 2021, este estrechamiento es mucho más pronunciado. Esto refleja una disminución sostenida en las tasas de natalidad y fecundidad en el estado durante la última década; cada vez nacen menos niños, lo que reduce el peso relativo de la población infantil frente al total.
 
 Ensanchamiento del centro (El bono demográfico):El "abultamiento" de la pirámide, que representa a las generaciones más numerosas, se ha desplazado hacia arriba. En 2010, la mayor concentración de personas se encontraba en las edades jóvenes (15 a 25 años). Para 2019 y 2021, este bloque se ha movido hacia el estrato de los 25 a 39 años. Esto indica que Sinaloa se encuentra en pleno "bono demográfico", donde la proporción de personas en edad de trabajar e insertarse en la fuerza laboral es significativamente mayor que la población dependiente (niños y ancianos).
@@ -132,7 +138,7 @@ Ahora para el cálculo de las tasas de mortalidad requiere conocer el volumen ex
 
 Una vez obtenido el numerador (defunciones observadas $D_x$) y el denominador (APV o $N_x$), se calcula la tasa central de mortalidad:$$m_x = \frac{D_x}{N_x}$$Posteriormente, esta tasa alimenta la tabla de mortalidad abreviada, cuyas columnas se calculan bajo las siguientes expresiones:
 
- ($a_x$):promedio de años-persona vividos por quienes fallecen en cierto intervalo.
+($a_x$):promedio de años-persona vividos por quienes fallecen en cierto intervalo.
 Para las edades infantiles (0 y 1 a 4 años) se utilizan las reglas empíricas de Coale-Demeny para corregir la asimetría de la mortalidad temprana. Para el resto de las edades, se asume distribución uniforme ($a_x = n/2$).
 
 Probabilidad de morir ($q_x$):$$q_x = \frac{n \cdot m_x}{1 + (n - a_x) \cdot m_x}$$
@@ -149,87 +155,149 @@ Años persona vividos acumulados ($T_x$): Total de años que le restan por vivir
 
 Esperanza de vida ($e_x$): Promedio de años adicionales que se espera viva una persona de edad $x$:$$e_x = \frac{T_x}{l_x}$$
 
+Para la tabla de vida de causa eliminada por homicidios, se parte de la lógica de riesgos competitivos . En primer lugar, se define el factor de reducción del riesgo:
+
+$$R_x^{-i} = \frac{D_x - D_x^{\,i}}{D_x}$$
+
+donde $D_x$ es el total de defunciones observadas en el intervalo y $D_x^{\,i}$ las defunciones atribuibles a la causa eliminada. A partir de ese factor, se recalcula la probabilidad de sobrevivir sin la causa $i$:
+
+$$p_x^{-i} = p_x^{R_x^{-i}}$$
+
+y, en consecuencia, la nueva probabilidad de morir queda definida como:
+
+$$q_x^{-i} = 1 - p_x^{-i}$$
+
+Después, se ajusta el valor de $a_x$ para la nueva tabla mediante:
+
+$$a_x^{-i} = n + \left( \frac{R_x^{-i}\, q_x}{q_x^{-i}} \right)(a_x - n)$$
+
+Con estos nuevos valores se reconstruyen los sobrevivientes exactos, las defunciones, los años persona vividos y la esperanza de vida de la tabla modificada:
+
+$$l_{x+n}^{-i} = l_x^{-i} \cdot p_x^{-i}$$
+
+$$d_x^{-i} = l_x^{-i} - l_{x+n}^{-i}$$
+
+$$L_x^{-i} = n \cdot l_{x+n}^{-i} + a_x^{-i} \cdot d_x^{-i}$$
+
+$$T_x^{-i} = \sum_{j=x}^{\omega} L_j^{-i}$$
+
+$$e_x^{-i} = \frac{T_x^{-i}}{l_x^{-i}}$$
+
+La diferencia entre la esperanza de vida original y la esperanza de vida en el escenario sin homicidios se interpreta como la ganancia potencial en años de vida:
+
+$$\Delta e_x = e_x^{-i} - e_x$$
+
+Para el análisis de fecundidad, se calcularon las tasas específicas de fecundidad por grupo quinquenal de edad de la madre. La tasa específica de fecundidad se define como:
+
+$$f_x = \frac{B_x}{P_x}$$
+
+donde $B_x$ son los nacimientos de madres en el grupo de edad $x$ a $x+n$, y $P_x$ es la población femenina expuesta al riesgo en ese mismo intervalo. Cuando se expresa por grupo quinquenal completo, se utiliza:
+
+$$5f_x = 5 \cdot f_x$$
+
+A partir de estas tasas se obtuvo la Tasa Global de Fecundidad:
+
+$$TGF = 5 \sum f_x$$
+
+La Tasa Bruta de Reproducción se calculó considerando únicamente los nacimientos femeninos. Para ello se utilizó el factor:
+
+$$K = \frac{100}{100+105}$$
+
+y así se estimó:
+
+$$TBR = 5 \sum (f_x \cdot K)$$
+
+Por su parte, la Tasa Neta de Reproducción incorporó la supervivencia femenina en cada grupo de edad reproductiva:
+
+$$TNR = 5 \sum \left(f_x \cdot K \cdot \frac{l_x}{l_0}\right)$$
+
+Esta medida permite evaluar el reemplazo generacional efectivo, considerando simultáneamente fecundidad y mortalidad.
+
+
+
+
+
 ```{r}
-expo <- function(K_0, K_T, t_0, t_T, t){ 
-  dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0)) 
-  r <- log(K_T / K_0) / dt 
-  h <- t - decimal_date(as.Date(t_0)) 
-  K_h <- K_0 * exp(r * h) 
-  return(K_h)
+expo <- function(K_0, K_T, t_0, t_T, t){
+dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0))
+r <- log(K_T / K_0) / dt
+h <- t - decimal_date(as.Date(t_0))
+K_h <- K_0 * exp(r * h)
+return(K_h)
 }
 
 grupo_edad <- function(x){
-  x <- suppressWarnings(as.numeric(x))
-  dplyr::case_when(
-    is.na(x) ~ NA_character_,
-    x == 0 ~ "0",
-    x >= 1  & x <= 4  ~ "1-4",
-    x >= 5  & x <= 9  ~ "5-9",
-    x >= 10 & x <= 14 ~ "10-14",
-    x >= 15 & x <= 19 ~ "15-19",
-    x >= 20 & x <= 24 ~ "20-24",
-    x >= 25 & x <= 29 ~ "25-29",
-    x >= 30 & x <= 34 ~ "30-34",
-    x >= 35 & x <= 39 ~ "35-39",
-    x >= 40 & x <= 44 ~ "40-44",
-    x >= 45 & x <= 49 ~ "45-49",
-    x >= 50 & x <= 54 ~ "50-54",
-    x >= 55 & x <= 59 ~ "55-59",
-    x >= 60 & x <= 64 ~ "60-64",
-    x >= 65 & x <= 69 ~ "65-69",
-    x >= 70 & x <= 74 ~ "70-74",
-    x >= 75 & x <= 79 ~ "75-79",
-    x >= 80 & x <= 84 ~ "80-84",
-    x >= 85 ~ "85+"
-  )
+x <- suppressWarnings(as.numeric(x))
+dplyr::case_when(
+is.na(x) ~ NA_character_,
+x == 0 ~ "0",
+x >= 1 & x <= 4 ~ "1-4",
+x >= 5 & x <= 9 ~ "5-9",
+x >= 10 & x <= 14 ~ "10-14",
+x >= 15 & x <= 19 ~ "15-19",
+x >= 20 & x <= 24 ~ "20-24",
+x >= 25 & x <= 29 ~ "25-29",
+x >= 30 & x <= 34 ~ "30-34",
+x >= 35 & x <= 39 ~ "35-39",
+x >= 40 & x <= 44 ~ "40-44",
+x >= 45 & x <= 49 ~ "45-49",
+x >= 50 & x <= 54 ~ "50-54",
+x >= 55 & x <= 59 ~ "55-59",
+x >= 60 & x <= 64 ~ "60-64",
+x >= 65 & x <= 69 ~ "65-69",
+x >= 70 & x <= 74 ~ "70-74",
+x >= 75 & x <= 79 ~ "75-79",
+x >= 80 & x <= 84 ~ "80-84",
+x >= 85 ~ "85+"
+)
 }
 
 lt_abr <- function(x, mx, sex = "f", IMR = NA) {
-  m <- length(x)
-  n <- c(diff(x), NA)
-  ax <- n / 2
+m <- length(x)
+n <- c(diff(x), NA)
+ax <- n / 2
 
-  if (sex == "m") {
-    if (mx[1] >= 0.107) {
-      ax[1] <- 0.330
-    } else {
-      ax[1] <- 0.045 + 2.684 * mx[1]
-    }
-  } else if (sex == "f") {
-    if (mx[1] >= 0.107) {
-      ax[1] <- 0.350
-    } else {
-      ax[1] <- 0.053 + 2.800 * mx[1]
-    }
-  }
+if (sex == "m") {
+if (mx[1] >= 0.107) {
+ax[1] <- 0.330
+} else {
+ax[1] <- 0.045 + 2.684 * mx[1]
+}
+} else if (sex == "f") {
+if (mx[1] >= 0.107) {
+ax[1] <- 0.350
+} else {
+ax[1] <- 0.053 + 2.800 * mx[1]
+}
+}
 
-  if (m >= 2) {
-    if (sex == "m") {
-      if (mx[1] >= 0.107) {
-        ax[2] <- 1.352
-      } else {
-        ax[2] <- 1.651 - 2.816 * mx[1]
-      }
-    } else if (sex == "f") {
-      if (mx[1] >= 0.107) {
-        ax[2] <- 1.361
-      } else {
-        ax[2] <- 1.522 - 1.518 * mx[1]
-      }
-    }
-  }
+if (m >= 2) {
+if (sex == "m") {
+if (mx[1] >= 0.107) {
+ax[2] <- 1.352
+} else {
+ax[2] <- 1.651 - 2.816 * mx[1]
+}
+} else if (sex == "f") {
+if (mx[1] >= 0.107) {
+ax[2] <- 1.361
+} else {
+ax[2] <- 1.522 - 1.518 * mx[1]
+}
+}
+}
 
-  qx <- (n * mx) / (1 + (n - ax) * mx)
-  qx[m] <- 1
-  px <- 1 - qx
-  lx <- 100000 * cumprod(c(1, px[-m]))
-  dx <- c(-diff(lx), lx[m])
-  Lx <- n * c(lx[-1], 0) + ax * dx
-  Lx[m] <- lx[m] / mx[m]
-  Tx <- rev(cumsum(rev(Lx)))
-  ex <- Tx / lx
+qx <- (n * mx) / (1 + (n - ax) * mx)
+qx[m] <- 1
+px <- 1 - qx
+lx <- 100000 * cumprod(c(1, px[-m]))
+dx <- c(-diff(lx), lx[m])
+Lx <- n * c(lx[-1], 0) + ax * dx
+Lx[m] <- lx[m] / mx[m]
+Tx <- rev(cumsum(rev(Lx)))
+ex <- Tx / lx
 
-  return(data.table(x, n, mx, ax, qx, px, lx, dx, Lx, Tx, ex))
+return(data.table(x, n, mx, ax, qx, px, lx, dx, Lx, Tx, ex))
 }
 ```
 
@@ -240,26 +308,26 @@ Se importan las proyecciones de CONAPO filtradas para la clave geográfica de Si
 pob <- fread("Proy_pob.csv")
 
 pob <- pob %>%
-  filter(CVE_GEO == 25,
-         ANIO %in% c(2010, 2011, 2019, 2020, 2021, 2022)) %>%
-  mutate(sex = ifelse(SEXO == "Hombres", "male", "female")) %>%
-  select(year = ANIO, age = EDAD, sex, pop = POBLACION)
+filter(CVE_GEO == 25,
+ANIO %in% c(2010, 2011, 2019, 2020, 2021, 2022)) %>%
+mutate(sex = ifelse(SEXO == "Hombres", "male", "female")) %>%
+select(year = ANIO, age = EDAD, sex, pop = POBLACION)
 
 get_apv <- function(datos, year_target) {
-  pob0 <- datos %>% filter(year == year_target)
-  pobT <- datos %>% filter(year == year_target + 1)
+pob0 <- datos %>% filter(year == year_target)
+pobT <- datos %>% filter(year == year_target + 1)
 
-  resultado <- pob0 %>%
-    left_join(pobT, by = c("age", "sex"), suffix = c("_0", "_T")) %>%
-    rowwise() %>%
-    mutate(N = expo(pop_0, pop_T,
-                    t_0 = paste0(year_target, "-01-01"),
-                    t_T = paste0(year_target + 1, "-01-01"),
-                    t   = year_target + 0.5)) %>%
-    ungroup() %>%
-    select(year = year_0, age, sex, N)
+resultado <- pob0 %>%
+left_join(pobT, by = c("age", "sex"), suffix = c("_0", "_T")) %>%
+rowwise() %>%
+mutate(N = expo(pop_0, pop_T,
+t_0 = paste0(year_target, "-01-01"),
+t_T = paste0(year_target + 1, "-01-01"),
+t = year_target + 0.5)) %>%
+ungroup() %>%
+select(year = year_0, age, sex, N)
 
-  return(resultado)
+return(resultado)
 }
 
 apv2010 <- get_apv(pob, 2010)
@@ -270,7 +338,7 @@ apv <- bind_rows(apv2010, apv2019, apv2021)
 ```
 
 
-Los registros  de mortalidad suelen presentar sesgos y variaciones atípicas. Para solucionarlo:
+Los registros de mortalidad suelen presentar sesgos y variaciones atípicas. Para solucionarlo:
 
 Se rescata correctamente a los menores de un año.
 
@@ -285,65 +353,65 @@ def_raw <- read_excel("defunciones_sinaloa.xlsx", skip = 7)
 names(def_raw) <- c("entidad", "edad", "reg", "ocu", "tot", "m", "f", "ne")
 
 def <- def_raw %>%
-  mutate(
-    reg = suppressWarnings(as.numeric(reg)),
-    ocu = suppressWarnings(as.numeric(ocu)),
-    m = suppressWarnings(as.numeric(m)),
-    f = suppressWarnings(as.numeric(f)),
-    
-    
-    age_temp = ifelse(grepl("Menores|menores", as.character(edad)), "0", as.character(edad)),
-    
-    age_num = suppressWarnings(as.numeric(gsub("^[^0-9]*([0-9]+).*$", "\\1", age_temp))),
-    
-    
-    age_num = ifelse(age_num %in% 1:4, 1, age_num)
-  ) %>%
-  filter(
-    !is.na(ocu),
-    ocu %in% c(2009, 2010, 2011, 2018, 2019, 2021),
-    !is.na(reg),
-    edad != "Total", # Filtramos la basura de la columna correcta
-    !grepl("No especificado", edad, ignore.case = TRUE),
-    !is.na(age_num)
-  ) %>%
-  select(age = age_num, year_orig = ocu, reg, m, f) %>%
-  pivot_longer(cols = c(m, f), names_to = "sex", values_to = "deaths") %>%
-  mutate(
-    sex = ifelse(sex == "m", "male", "female"),
-    deaths = replace_na(deaths, 0)
-  ) %>%
-  
-  group_by(year_orig, age, sex) %>%
-  summarise(deaths = sum(deaths, na.rm = TRUE), .groups = "drop") %>%
+mutate(
+reg = suppressWarnings(as.numeric(reg)),
+ocu = suppressWarnings(as.numeric(ocu)),
+m = suppressWarnings(as.numeric(m)),
+f = suppressWarnings(as.numeric(f)),
 
-  mutate(
-    year = ifelse(year_orig %in% 2009:2011, 2010,
-                  ifelse(year_orig %in% 2018:2019, 2019, year_orig))
-  ) %>%
-  
-  group_by(year, age, sex) %>%
-  summarise(deaths = mean(deaths, na.rm = TRUE), .groups = "drop")
+
+age_temp = ifelse(grepl("Menores|menores", as.character(edad)), "0", as.character(edad)),
+
+age_num = suppressWarnings(as.numeric(gsub("^[^0-9]*([0-9]+).*$", "\\1", age_temp))),
+
+
+age_num = ifelse(age_num %in% 1:4, 1, age_num)
+) %>%
+filter(
+!is.na(ocu),
+ocu %in% c(2009, 2010, 2011, 2018, 2019, 2021),
+!is.na(reg),
+edad != "Total", # Filtramos la basura de la columna correcta
+!grepl("No especificado", edad, ignore.case = TRUE),
+!is.na(age_num)
+) %>%
+select(age = age_num, year_orig = ocu, reg, m, f) %>%
+pivot_longer(cols = c(m, f), names_to = "sex", values_to = "deaths") %>%
+mutate(
+sex = ifelse(sex == "m", "male", "female"),
+deaths = replace_na(deaths, 0)
+) %>%
+
+group_by(year_orig, age, sex) %>%
+summarise(deaths = sum(deaths, na.rm = TRUE), .groups = "drop") %>%
+
+mutate(
+year = ifelse(year_orig %in% 2009:2011, 2010,
+ifelse(year_orig %in% 2018:2019, 2019, year_orig))
+) %>%
+
+group_by(year, age, sex) %>%
+summarise(deaths = mean(deaths, na.rm = TRUE), .groups = "drop")
 ```
 
 Se agrupan el APV y las defunciones bajo una estructura de factores estricta. Al unir las bases, se obtiene el numerador y denominador necesarios para calcular las tasas específicas de mortalidad ($m_x$) de cada subgrupo poblacional.
 
 ```{r}
 apv_abr <- apv %>%
-  mutate(age = grupo_edad(age)) %>%
-  filter(!is.na(age)) %>%
-  group_by(year, sex, age) %>%
-  summarise(N = sum(N, na.rm = TRUE), .groups = "drop")
+mutate(age = grupo_edad(age)) %>%
+filter(!is.na(age)) %>%
+group_by(year, sex, age) %>%
+summarise(N = sum(N, na.rm = TRUE), .groups = "drop")
 
 def_abr <- def %>%
-  mutate(age = grupo_edad(age)) %>%
-  filter(!is.na(age)) %>%
-  group_by(year, sex, age) %>%
-  summarise(deaths = sum(deaths, na.rm = TRUE), .groups = "drop")
+mutate(age = grupo_edad(age)) %>%
+filter(!is.na(age)) %>%
+group_by(year, sex, age) %>%
+summarise(deaths = sum(deaths, na.rm = TRUE), .groups = "drop")
 
 niveles_edad <- c("0", "1-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
-                  "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69",
-                  "70-74", "75-79", "80-84", "85+")
+"35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69",
+"70-74", "75-79", "80-84", "85+")
 
 edad_inicio <- c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85)
 ```
@@ -352,14 +420,14 @@ edad_inicio <- c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75
 
 ```{r}
 lt_input <- left_join(apv_abr, def_abr, by = c("year", "sex", "age")) %>%
-  mutate(
-    deaths = replace_na(deaths, 0),
-    # Previene infinitos sin borrar la fila, asegurando que temp tenga los 19 renglones
-    N = ifelse(is.na(N) | N == 0, 1, N), 
-    mx = deaths / N,
-    age = factor(age, levels = niveles_edad)
-  ) %>%
-  arrange(sex, year, age)
+mutate(
+deaths = replace_na(deaths, 0),
+# Previene infinitos sin borrar la fila, asegurando que temp tenga los 19 renglones
+N = ifelse(is.na(N) | N == 0, 1, N),
+mx = deaths / N,
+age = factor(age, levels = niveles_edad)
+) %>%
+arrange(sex, year, age)
 
 ```
 
@@ -369,42 +437,42 @@ A través de un proceso iterativo, se calculan las 6 tablas de vida resultantes.
 lt_output <- data.table()
 
 for(s in c("male", "female")){
-  for(y in c(2010, 2019, 2021)){
+for(y in c(2010, 2019, 2021)){
 
-    temp <- lt_input %>%
-      filter(sex == s, year == y) %>%
-      arrange(age)
+temp <- lt_input %>%
+filter(sex == s, year == y) %>%
+arrange(age)
 
-    sex_fun <- ifelse(s == "male", "m", "f")
+sex_fun <- ifelse(s == "male", "m", "f")
 
-    temp_lt <- lt_abr(
-      x = edad_inicio,
-      mx = temp$mx,
-      sex = sex_fun
-    ) %>%
-      as.data.table()
+temp_lt <- lt_abr(
+x = edad_inicio,
+mx = temp$mx,
+sex = sex_fun
+) %>%
+as.data.table()
 
-    temp_lt[, year := y]
-    temp_lt[, sex := sex_fun]
+temp_lt[, year := y]
+temp_lt[, sex := sex_fun]
 
-    lt_output <- rbind(
-      lt_output,
-      temp_lt[, .(
-        lt_desc = "LT VR/Census, MEX",
-        year,
-        sex,
-        age = x,
-        mx = round(mx, 6),
-        qx = round(qx, 6),
-        ax = round(ax, 2),
-        lx = round(lx, 0),
-        dx = round(dx, 0),
-        Lx = round(Lx, 0),
-        Tx = round(Tx, 0),
-        ex = round(ex, 2)
-      )]
-    )
-  }
+lt_output <- rbind(
+lt_output,
+temp_lt[, .(
+lt_desc = "LT VR/Census, MEX",
+year,
+sex,
+age = x,
+mx = round(mx, 6),
+qx = round(qx, 6),
+ax = round(ax, 2),
+lx = round(lx, 0),
+dx = round(dx, 0),
+Lx = round(Lx, 0),
+Tx = round(Tx, 0),
+ex = round(ex, 2)
+)]
+)
+}
 }
 
 ```
@@ -413,10 +481,10 @@ Esperanza de vida al nacer resume las condiciones de salud y el nivel general de
 
 ```{r}
 resumen_e0 <- lt_output %>%
-  as_tibble() %>%
-  filter(age == 0) %>%
-  select(year, sex, ex) %>%
-  pivot_wider(names_from = sex, values_from = ex)
+as_tibble() %>%
+filter(age == 0) %>%
+select(year, sex, ex) %>%
+pivot_wider(names_from = sex, values_from = ex)
 
 kable(resumen_e0, caption = "Esperanza de vida al nacer por sexo y año")
 ```
@@ -426,8 +494,11 @@ En esta sección se presenta el tabulado final que integra las tablas de mortali
 A través de esta tabla, es posible rastrear el historial de vida de la cohorte ficticia, observando variables como la de los sobrevivientes ($l_x$), la concentración de las defunciones ($d_x$) y la expectativa de vida restante ($e_x$) en cada etapa del ciclo vital, etc.
 
 ```{r}
-kable(lt_output, caption = "Tabla de Vida Sinaloa") %>%
-  kable_styling(latex_options = c("repeat_header", "scale_down"), font_size = 8)
+lt_output %>%
+select(-lt_desc) %>%
+kable(caption = "Tabla de Vida Sinaloa") %>%
+kable_styling(latex_options = c("repeat_header", "scale_down"), font_size = 8)
+
 fwrite(lt_output, "tabla_vida_sinaloa_consolidada.csv")
 ```
 
@@ -436,15 +507,18 @@ fwrite(lt_output, "tabla_vida_sinaloa_consolidada.csv")
 ```{r}
 # Defunciones por edad y sexo
 niveles_edad <- c("0", "1-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
-                  "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69",
-                  "70-74", "75-79", "80-84", "85+")
+"35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69",
+"70-74", "75-79", "80-84", "85+")
 def_abr_plot <- def_abr %>%
-  mutate(age = factor(age, levels = niveles_edad)) 
+mutate(age = factor(age, levels = niveles_edad))
+
+etiquetas_visibles <- c("0", "10-14", "20-24", "30-34", "40-44", "50-54", "60-64", "70-74", "80-84")
 
 ggplot(def_abr_plot, aes(x = age, y = deaths, color = sex, group = sex)) +
   geom_line() +
   geom_point() +
   facet_wrap(~year) +
+  scale_x_discrete(breaks = etiquetas_visibles) + 
   labs(title = "Defunciones por edad y sexo en Sinaloa",
        x = "Grupo de edad", y = "Promedio de defunciones", color = "Sexo") +
   theme_minimal() +
@@ -456,45 +530,838 @@ ggsave("grafica_defunciones_sinaloa.png", width = 8, height = 5, dpi = 300)
 # Evolución de mx
 
 ggplot(lt_output %>% as_tibble(), aes(x = age, y = log(mx), color = factor(year), group = year)) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~sex) +
-  labs(title = "Evolución de la tasa de mortalidad en Sinaloa",
-       x = "Edad inicial del grupo", y = "log(mx)", color = "Año") +
-  theme_minimal()
+geom_line() +
+geom_point() +
+facet_wrap(~sex) +
+labs(title = "Evolución de la tasa de mortalidad en Sinaloa",
+x = "Edad inicial del grupo", y = "log(mx)", color = "Año") +
+theme_minimal()
 
 ggsave("mortalidad_mx_sinaloa.png", width = 8, height = 5, dpi = 300)
 ```
 ```{r}
-#  Curva de Esperanza de Vida (ex)
+# Curva de Esperanza de Vida (ex)
 
 lt_output_plot <- lt_output %>%
-  as_tibble() %>%
-  mutate(age = factor(age, levels = edad_inicio))
+as_tibble() %>%
+mutate(age = factor(age, levels = edad_inicio))
 
 ggplot(lt_output_plot, aes(x = age, y = ex, color = factor(year), group = year)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2) +
-  facet_wrap(~sex, labeller = as_labeller(c("m" = "Hombres", "f" = "Mujeres"))) +
-  labs(title = "Curva de Esperanza de Vida (ex) en Sinaloa",
-       subtitle = "Comparativa temporal 2010 vs 2019 vs 2021",
-       x = "Edad exacta cumplida (x)", 
-       y = "Años adicionales de vida (ex)", 
-       color = "Año") +
-  theme_minimal() +
-  scale_color_manual(values = c("2010" = "#1b9e77", "2019" = "#d95f02", "2021" = "#7570b3")) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+geom_line(linewidth = 1) +
+geom_point(size = 2) +
+facet_wrap(~sex, labeller = as_labeller(c("m" = "Hombres", "f" = "Mujeres"))) +
+labs(title = "Curva de Esperanza de Vida (ex) en Sinaloa",
+subtitle = "Comparativa temporal 2010 vs 2019 vs 2021",
+x = "Edad exacta cumplida (x)",
+y = "Años adicionales de vida (ex)",
+color = "Año") +
+theme_minimal() +
+scale_color_manual(values = c("2010" = "#1b9e77", "2019" = "#d95f02", "2021" = "#7570b3")) +
+theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave("curva_esperanza_vida_ex.png", width = 8, height = 5, dpi = 300)
 
 ```
 
-A partir de los indicadores biométricos obtenidos en las tablas de vida abreviadas, el análisis de la mortalidad en el estado de Sinaloa revela una transición demográfica interrumpida por un evento epidemiológico sin precedentes. La comparativa de los años 2010, 2019 y 2021 permite aislar las tendencias históricas estructurales frente al choque  provocado por el virus SARS-CoV-2.
+A partir de los indicadores biométricos obtenidos en las tablas de vida abreviadas, el análisis de la mortalidad en el estado de Sinaloa revela una transición demográfica interrumpida por un evento epidemiológico sin precedentes. La comparativa de los años 2010, 2019 y 2021 permite aislar las tendencias históricas estructurales frente al choque provocado por el virus SARS-CoV-2.
 
 Durante la década previa a la pandemia, Sinaloa exhibió un comportamiento típico de un estado en fase avanzada de transición epidemiológica. La esperanza de vida al nacer ($e_0$) mostró una estabilización, reflejando avances en la contención de enfermedades infecciosas y la reducción de la mortalidad infantil (como se observa en la caída de las tasas $m_0$ y $m_1$).Sin embargo, el análisis por sexo revela una particularidad histórica profunda en la entidad: la sobremortalidad masculina en edades jóvenes. Al observar las gráficas de evolución de la tasa central de mortalidad ($log(m_x)$), se aprecia una clara "joroba" (sobresalto en la curva) en el grupo de hombres de 15 a 29 años, la cual no está presente en la curva femenina. Este fenómeno atípico, persistente tanto en 2010 como en 2019, se explica por la alta incidencia de muertes por causas externas (accidentes y homicidios) que caracterizan el perfil de riesgo de la región.
 
-El  COVID-19 (2021) en el año 2021 marca una disrupción total en la biometría del estado. Las gráficas de distribución de defunciones evidencian un exceso de mortalidad masivo que rompe con la suavidad de las curvas históricas.A diferencia de la mortalidad por causas externas que afecta a los jóvenes, la letalidad del COVID-19 alteró drásticamente el patrón de supervivencia en la adultez y la senectud. Al analizar las tasas $m_x$ de 2021, se observa un incremento  del riesgo de muerte a partir del grupo de 40-44 años, alcanzando picos severos en los mayores de 60 años.
+El COVID-19 (2021) en el año 2021 marca una disrupción total en la biometría del estado. Las gráficas de distribución de defunciones evidencian un exceso de mortalidad masivo que rompe con la suavidad de las curvas históricas.A diferencia de la mortalidad por causas externas que afecta a los jóvenes, la letalidad del COVID-19 alteró drásticamente el patrón de supervivencia en la adultez y la senectud. Al analizar las tasas $m_x$ de 2021, se observa un incremento del riesgo de muerte a partir del grupo de 40-44 años, alcanzando picos severos en los mayores de 60 años.
 
 Al reducirse drásticamente los individuos vivos en estas edades, se mermó de forma severa el total de Años Persona Vividos restantes para la cohorte ($T_x$).Como resultado directo, la esperanza de vida al nacer ($e_0$) en 2021 sufrió un retroceso. Los años de ganancia en supervivencia que al estado le tomó más de una década consolidar, se perdieron en un solo año calendario. Asimismo, la pandemia acentuó la brecha de género: dado que biológica y socialmente la letalidad por complicaciones de COVID-19 afectó en mayor proporción a los varones sinaloenses, el retroceso en la $e_x$ masculina fue visiblemente más agudo que el impacto observado en la población femenina.
 
 Como conclusión los resultados de este modelo demuestran que, si bien Sinaloa posee una estructura poblacional con un mayor concentración en edades económicamente activas, su perfil de mortalidad es altamente vulnerable tanto a riesgos sociales crónicos (causas externas en jóvenes) como a crisis sanitarias. Las tablas de mortalidad construidas para 2021 son un testimonio cuantitativo del impacto de la pandemia, recordando que la esperanza de vida no es una garantía monótona y ascendente, sino un indicador dinámico sujeto a diveros factores.
+
+
+
+Ahora definiremos la función que construye la tabla de vida de causa eliminada mediante el método de riesgos competitivos visto en clase. La función toma como base la tabla de vida original y la ajusta suponiendo que la causa de muerte seleccionada desaparece, lo que permite estimar cómo cambiaría la esperanza de vida.
+
+```{r}
+lt_causa_elim_completa <- function(x, mx, Dx, nDxi, sex = "m") {
+m <- length(x)
+n <- c(diff(x), NA)
+ax <- n / 2
+
+
+if (sex == "m") {
+if (mx[1] >= 0.107) { ax[1] <- 0.330 } else { ax[1] <- 0.045 + 2.684 * mx[1] }
+if (m >= 2) { if (mx[1] >= 0.107) { ax[2] <- 1.352 } else { ax[2] <- 1.651 - 2.816 * mx[1] } }
+} else if (sex == "f") {
+if (mx[1] >= 0.107) { ax[1] <- 0.350 } else { ax[1] <- 0.053 + 2.800 * mx[1] }
+if (m >= 2) { if (mx[1] >= 0.107) { ax[2] <- 1.361 } else { ax[2] <- 1.522 - 1.518 * mx[1] } }
+}
+
+
+qx <- (n * mx) / (1 + (n - ax) * mx)
+qx[m] <- 1
+px <- 1 - qx
+lx <- 100000 * cumprod(c(1, px[-m]))
+dx <- c(-diff(lx), lx[m])
+Lx <- n * c(lx[-1], 0) + ax * dx
+Lx[m] <- lx[m] / mx[m]
+Tx <- rev(cumsum(rev(Lx)))
+ex <- Tx / lx
+
+
+Rx <- (Dx - nDxi) / Dx
+Rx[Dx == 0 | is.na(Rx)] <- 1 
+
+
+px_i <- px^Rx
+qx_i <- 1 - px_i
+qx_i[m] <- 1
+px_i[m] <- 0
+
+
+ax_i <- n + (Rx * qx / qx_i) * (ax - n)
+ax_i[qx_i == 0 | is.na(ax_i)] <- ax[qx_i == 0 | is.na(ax_i)] 
+
+lx_i <- 100000 * cumprod(c(1, px_i[-m]))
+dx_i <- c(-diff(lx_i), lx_i[m])
+
+Lx_i <- n * c(lx_i[-1], 0) + ax_i * dx_i
+Lx_i[m] <- lx_i[m] / (mx[m] * Rx[m]) 
+
+Tx_i <- rev(cumsum(rev(Lx_i)))
+ex_i <- Tx_i / lx_i
+
+
+resultado <- data.table(
+`Age x` = x,
+n = n,
+nDx = round(Dx, 0),
+nDxi = round(nDxi, 0),
+`R^{-i}` = round(Rx, 2),
+`l_x` = round(lx, 0),
+`_np_x` = round(px, 4),
+`nqx` = round(qx, 4),
+`nax` = round(ax, 2),
+`*e_x^0` = round(ex, 2),
+`*np_x^{-i}` = round(px_i, 4),
+`nqx_i` = round(qx_i, 4),
+`*l_x^{-i}` = round(lx_i, 0),
+`ndx_i` = round(dx_i, 3),
+`*nax^{-i}` = round(ax_i, 4),
+L = round(Lx_i, 0),
+T = round(Tx_i, 0),
+`*e_x^{-i}` = round(ex_i, 2),
+diff = round(ex_i - ex, 2)
+)
+
+return(resultado)
+}
+```
+
+Se carga la base de homicidios correspondiente a 2019 y se realiza una limpieza inicial de los datos. El objetivo es dejar las defunciones por sexo y edad en un formato compatible con la tabla de vida.
+
+```{r}
+
+homi_raw <- read_excel("homicidios.xlsx", skip = 8, col_names = FALSE)
+
+
+names(homi_raw) <- c("edad", "tot", "m", "f", "ne")
+
+
+homi_2019 <- homi_raw %>%
+mutate(
+
+m = suppressWarnings(as.numeric(m)),
+f = suppressWarnings(as.numeric(f)),
+
+age_temp = ifelse(grepl("Menores|menores", as.character(edad)), "0", as.character(edad)),
+age_num = suppressWarnings(as.numeric(gsub("^[^0-9]*([0-9]+).*$", "\\1", age_temp))),
+
+
+age_num = ifelse(age_num %in% 1:4, 1, age_num)
+) %>%
+filter(
+
+!grepl("Total|No especificado", edad, ignore.case = TRUE),
+!is.na(age_num)
+) %>%
+
+select(age_num, m, f) %>%
+
+pivot_longer(cols = c(m, f), names_to = "sex", values_to = "nDxi") %>%
+mutate(
+sex = ifelse(sex == "m", "male", "female"),
+nDxi = replace_na(nDxi, 0)
+) %>%
+
+group_by(sex, age_num) %>%
+summarise(nDxi = sum(nDxi, na.rm = TRUE), .groups = "drop")
+```
+
+Después, las edades simples se agrupan en intervalos quinquenales para que coincidan con la estructura de la tabla de vida. Esto es necesario porque la eliminación de una causa se analiza por grupos de edad y no por edades aisladas.
+
+
+```{r}
+homi_abr <- homi_2019 %>%
+mutate(age = grupo_edad(age_num)) %>%
+filter(!is.na(age)) %>%
+group_by(sex, age) %>%
+summarise(nDxi = sum(nDxi, na.rm = TRUE), .groups = "drop") %>%
+mutate(age = factor(age, levels = niveles_edad))
+```
+
+
+```{r}
+year_target <- 2019
+
+ce_input <- lt_input %>%
+filter(year == year_target) %>%
+left_join(homi_abr, by = c("sex", "age")) %>%
+mutate(
+nDxi = replace_na(nDxi, 0),
+# Total de defunciones del denominador original
+Dx = deaths
+) %>%
+arrange(sex, age)
+```
+
+Como los efectos de eliminar una causa pueden diferir entre hombres y mujeres, el procedimiento se repite por separado para ambos sexos. Esto permite comparar con mayor claridad la ganancia potencial en esperanza de vida.
+```{r}
+lt_ce_output <- data.table()
+
+for (s in c("male", "female")) {
+
+temp <- ce_input %>%
+filter(sex == s) %>%
+arrange(age)
+
+sex_fun <- ifelse(s == "male", "m", "f")
+
+temp_ce <- lt_causa_elim_completa(
+x = edad_inicio,
+mx = temp$mx,
+Dx = temp$Dx,
+nDxi = temp$nDxi,
+sex = sex_fun
+) %>%
+as.data.table()
+
+temp_ce[, year := year_target]
+temp_ce[, sex := sex_fun]
+temp_ce[, causa := "Homicidio"]
+
+lt_ce_output <- rbind(lt_ce_output, temp_ce)
+
+}
+```
+
+El resultado final se organiza en una tabla con el mismo formato que la salida original del Excel. Esto facilita la lectura, la comparación por edad y la exportación de resultados para su uso posterior, pero no se imprimen todos los resultados en el pdf por que no saldria completa al ser muchas variables, asi que solo aparecen las que se consideraron más importantes.
+```{r}
+lt_ce_output %>%
+select(`Age x`, n, nDx, nDxi, `R^{-i}`, `*e_x^0`, `*e_x^{-i}`, diff) %>%
+kable(
+format = "latex",
+longtable = TRUE,
+booktabs = TRUE,
+caption = "Tabla de Vida de Causa Eliminada — Homicidios, Sinaloa 2019"
+) %>%
+kable_styling(
+latex_options = c("repeat_header"),
+font_size = 8
+)
+
+```
+
+Para sintetizar los resultados, se extrae la esperanza de vida al nacer antes y después de eliminar homicidios. Esta comparación permite ver de forma directa cuántos años de vida podrían ganarse bajo ese escenario hipotético.
+La gráfica siguiente resume la ganancia en esperanza de vida por grupo de edad. La línea de referencia en cero ayuda a identificar en qué edades el efecto de eliminar homicidios es mayor.
+```{r}
+# Tabla resumen de la ganancia en e0
+lt_ce_output %>%
+as_tibble() %>%
+filter(`Age x` == 0) %>%
+select(year, sex, causa,
+`e0 original` = `*e_x^0`,
+`e0 sin homicidio` = `*e_x^{-i}`,
+`Ganancia (años)` = diff) %>%
+kable(caption = "Ganancia en esperanza de vida al eliminar homicidios, Sinaloa 2019") %>%
+kable_styling(latex_options = "hold_position")
+
+# Gráfica de la ganancia por grupo de edad
+lt_ce_output %>%
+as_tibble() %>%
+ggplot(aes(x = `Age x`, y = diff, color = sex, group = sex)) +
+geom_line(linewidth = 1) +
+geom_point(size = 2) +
+geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+scale_color_manual(values = c("m" = "steelblue", "f" = "salmon"),
+labels = c("m" = "Hombres", "f" = "Mujeres")) +
+labs(
+title = "Ganancia en esperanza de vida al eliminar homicidios",
+subtitle = paste("Sinaloa", year_target, "— Método de riesgos competitivos (Chiang)"),
+x = "Edad exacta (x)",
+y = expression(e[x]^{-i} - e[x]^0 ~ "(años ganados)"),
+color = "Sexo"
+) +
+theme_minimal()
+
+ggsave("causa_eliminada_homicidios_sinaloa2019.png", width = 8, height = 5, dpi = 300)
+
+# Exportar
+fwrite(lt_ce_output, "tabla_causa_eliminada_homicidios_sinaloa2019.csv")
+```
+
+
+
+```{r}
+graf_e0 <- lt_ce_output %>%
+as_tibble() %>%
+filter(`Age x` == 0) %>%
+mutate(
+Sexo = ifelse(sex == "m", "Hombres", "Mujeres"),
+`Sin homicidios` = `*e_x^0`,
+`Con homicidios` = `*e_x^{-i}`
+) %>%
+select(Sexo, `Sin homicidios`, `Con homicidios`) %>%
+pivot_longer(cols = c(`Sin homicidios`, `Con homicidios`),
+names_to = "Escenario", values_to = "e0")
+
+ggplot(graf_e0, aes(x = Sexo, y = e0, fill = Escenario)) +
+geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+geom_text(aes(label = round(e0, 2)),
+position = position_dodge(width = 0.8),
+vjust = -0.4, size = 3.5) +
+labs(title = "Esperanza de vida al nacer",
+x = NULL, y = "e0", fill = NULL) +
+theme_minimal() +
+theme(legend.position = "bottom")
+
+ggsave("output/grafica_e0_homicidios.png", width = 8, height = 5, dpi = 300)
+```
+La esperanza de vida al nacer es mayor en mujeres que en hombres en ambos escenarios. En los hombres, la eliminación de homicidios incrementa la esperanza de vida de 74.69 a 76.32 años, mientras que en mujeres el aumento es mucho menor, de 81.62 a 81.73 años. Esto muestra que los homicidios tienen un impacto claramente más fuerte sobre la mortalidad masculina
+
+
+Finalmente, se representa la probabilidad de morir por edad en escala logarítmica. Esta transformación permite visualizar mejor las diferencias entre escenarios, especialmente en edades donde las probabilidades son muy pequeñas.
+
+```{r}
+graf_qx <- lt_ce_output %>%
+as_tibble() %>%
+mutate(
+Sexo = ifelse(sex == "m", "Hombres", "Mujeres"),
+Edad = `Age x`,
+nqx_plot = ifelse(nqx <= 0, NA, nqx),
+nqx_i_plot = ifelse(nqx_i <= 0, NA, nqx_i)
+) %>%
+select(Sexo, Edad, nqx_plot, nqx_i_plot) %>%
+pivot_longer(cols = c(nqx_plot, nqx_i_plot),
+names_to = "Escenario", values_to = "qx")
+
+ggplot(graf_qx, aes(x = Edad, y = qx, color = Escenario, group = Escenario)) +
+geom_line(linewidth = 1) +
+facet_wrap(~Sexo) +
+scale_y_log10() +
+labs(
+title = "Probabilidad de morir",
+subtitle = "Escala logarítmica",
+x = "Edad",
+y = "q_x (escala log10)",
+color = NULL
+) +
+theme_minimal()
+
+ggsave("output/grafica_qx_log_homicidios.png", width = 10, height = 5, dpi = 300)
+```
+La probabilidad de morir es más alta cuando se incluyen los homicidios, especialmente en edades jóvenes y adultas jóvenes, la diferencia entre el escenario original y el escenario sin homicidios es más marcada en hombres que en mujeres, lo que confirma que esta causa tiene un peso desproporcionado sobre la mortalidad masculina. 
+La escala logarítmica permite observar con mayor claridad estas diferencias a lo largo de todo el ciclo de vida.
+
+
+
+
+Ahora en esta parte se prepara toda la información necesaria para calcular las medidas sintéticas de fecundidad de Sinaloa. Primero se obtiene la población expuesta al riesgo, luego se cargan los nacimientos por grupo de edad de la madre y finalmente se construye la tabla intermedia con las tasas específicas de fecundidad.
+La población se toma de la proyección oficial y se restringe a Sinaloa para los años de interés. Después, se separa por sexo y edad, porque la fecundidad se calcula únicamente sobre la población femenina en edades reproductivas.
+Para obtener una población media anual más estable, se aplica una interpolación exponencial entre dos años consecutivos. Esto permite aproximar la población expuesta al riesgo durante el año de análisis y evita usar únicamente una observación puntual.
+A continuación se importan los nacimientos de Sinaloa desde los archivos de 2010 y 2019. Se selecciona la fila correspondiente a la entidad y se extraen los nacimientos por edad de la madre, ya organizados en grupos quinquenales.
+Una vez leída la población total, se agrupan las edades simples en intervalos quinquenales de 15 a 49 años. Esta agrupación es necesaria para que la población femenina coincida con la misma estructura usada en los nacimientos.
+
+Con los nacimientos y la población femenina ya alineados, se calculan las tasas específicas de fecundidad. Después se multiplica por cinco para obtener la tasa quinquenal y, posteriormente, se ajusta con la constante 
+K
+K para estimar la TBR.
+La TGF resume el nivel global de fecundidad a partir de la suma de las tasas específicas. La TBR, por su parte, incorpora el peso relativo de los nacimientos femeninos y permite aproximar cuántas hijas tendría en promedio una mujer si se mantuvieran las tasas observadas.
+Después se calcula la TNR, que añade el componente de supervivencia femenina. Esta medida no solo considera cuántos nacimientos ocurren, sino también cuántas mujeres sobreviven hasta cada edad reproductiva, por lo que ofrece una visión más completa del reemplazo generacional.
+
+Los resultados se integran en una sola tabla resumen con TGF, TBR y TNR para cada año. Esta tabla permite comparar de manera directa la evolución de la fecundidad en Sinaloa entre 2010 y 2019.
+Finalmente, se genera una gráfica de barras y otra de líneas para comparar visualmente las tres medidas sintéticas. La representación gráfica ayuda a observar con mayor claridad la magnitud de los cambios entre ambos años
+```{r}
+dir.create("output", showWarnings = FALSE)
+
+# -------------------------
+# Funciones auxiliares
+# -------------------------
+expo <- function(K_0, K_T, t_0, t_T, t){
+  dt <- decimal_date(as.Date(t_T)) - decimal_date(as.Date(t_0))
+  r <- log(K_T / K_0) / dt
+  h <- t - decimal_date(as.Date(t_0))
+  K_h <- K_0 * exp(r * h)
+  return(K_h)
+}
+
+grupo_edad_fec <- function(x){
+  x <- suppressWarnings(as.numeric(x))
+  dplyr::case_when(
+    is.na(x) ~ NA_character_,
+    x >= 15 & x <= 19 ~ "15-19",
+    x >= 20 & x <= 24 ~ "20-24",
+    x >= 25 & x <= 29 ~ "25-29",
+    x >= 30 & x <= 34 ~ "30-34",
+    x >= 35 & x <= 39 ~ "35-39",
+    x >= 40 & x <= 44 ~ "40-44",
+    x >= 45 & x <= 49 ~ "45-49",
+    TRUE ~ NA_character_
+  )
+}
+
+K <- 100 / (100 + 105)
+
+# -------------------------
+# Población
+# -------------------------
+pob <- fread("Proy_pob.csv")
+
+pob_sin <- pob %>%
+  filter(ENTIDAD == "Sinaloa", ANIO %in% c(2010, 2011, 2019, 2020)) %>%
+  mutate(
+    sex = ifelse(SEXO == "Hombres", "male", "female"),
+    age = suppressWarnings(as.numeric(EDAD)),
+    year = ANIO,
+    pop = POBLACION
+  ) %>%
+  select(year, age, sex, pop)
+
+get_apv <- function(datos, year_target) {
+  pob0 <- datos %>% filter(year == year_target)
+  pobT <- datos %>% filter(year == year_target + 1)
+
+  pob0 %>%
+    left_join(pobT, by = c("age", "sex"), suffix = c("_0", "_T")) %>%
+    rowwise() %>%
+    mutate(
+      N = expo(
+        K_0 = pop_0,
+        K_T = pop_T,
+        t_0 = paste0(year_target, "-01-01"),
+        t_T = paste0(year_target + 1, "-01-01"),
+        t = year_target + 0.5
+      )
+    ) %>%
+    ungroup() %>%
+    select(year = year_0, age, sex, N)
+}
+
+apv2010 <- get_apv(pob_sin, 2010)
+apv2019 <- get_apv(pob_sin, 2019)
+apv <- bind_rows(apv2010, apv2019)
+
+# -------------------------
+# Nacimientos desde Excel
+# -------------------------
+read_births_row <- function(file, year_target){
+
+  b <- read_excel(file, skip = 5, col_names = TRUE)
+
+  # Limpieza de nombres
+  names(b) <- trimws(names(b))
+
+  # Buscar la fila de Sinaloa
+  fila <- b %>%
+    filter(grepl("Sinaloa", as.character(.[[2]])) | grepl("^25$", as.character(.[[1]])))
+
+  if(nrow(fila) == 0){
+    stop(paste("No se encontró la fila de Sinaloa en", file))
+  }
+
+  fila <- fila[1, ]
+
+  out <- tibble(
+    year = year_target,
+    age = c("15-19","20-24","25-29","30-34","35-39","40-44","45-49"),
+    births = c(
+      as.numeric(gsub(",", "", fila[["De 15 a 19 años"]])),
+      as.numeric(gsub(",", "", fila[["De 20 a 24 años"]])),
+      as.numeric(gsub(",", "", fila[["De 25 a 29 años"]])),
+      as.numeric(gsub(",", "", fila[["De 30 a 34 años"]])),
+      as.numeric(gsub(",", "", fila[["De 35 a 39 años"]])),
+      as.numeric(gsub(",", "", fila[["De 40 a 44 años"]])),
+      as.numeric(gsub(",", "", fila[["De 45 a 49 años"]]))
+    )
+  )
+
+  out
+}
+
+b2010 <- read_births_row("Nacimientos_2010.xlsx", 2010)
+b2019 <- read_births_row("Nacimientos_2019.xlsx", 2019)
+births <- bind_rows(b2010, b2019)
+
+# -------------------------
+# Población femenina reproductiva
+# -------------------------
+pob_fem <- pob_sin %>%
+  filter(sex == "female") %>%
+  mutate(age_fec = grupo_edad_fec(age)) %>%
+  filter(!is.na(age_fec)) %>%
+  group_by(year, age = age_fec) %>%
+  summarise(pop_fem = sum(pop, na.rm = TRUE), .groups = "drop")
+
+# -------------------------
+# Tabla intermedia fecundidad
+# -------------------------
+fec <- births %>%
+  left_join(pob_fem, by = c("year", "age")) %>%
+  mutate(
+    fx = births / pop_fem,
+    fx5 = 5 * fx,
+    fx5_fem = fx5 * K
+  )
+
+# -------------------------
+# TGF y TBR
+# -------------------------
+res_tfg_tbr <- fec %>%
+  group_by(year) %>%
+  summarise(
+    TGF = 5 * sum(fx, na.rm = TRUE),
+    TBR = 5 * sum(fx * K, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(TBR_check = TGF * K)
+
+# -------------------------
+# Tabla de vida femenina para TNR
+# -------------------------
+lt_fem <- lt_output %>%
+  as_tibble() %>%
+  filter(sex == "f", age %in% c(15, 20, 25, 30, 35, 40, 45)) %>%
+  mutate(age = grupo_edad_fec(age)) %>%
+  select(year, age, lx)
+
+tnr_tbl <- fec %>%
+  left_join(lt_fem, by = c("year", "age")) %>%
+  mutate(
+    surv = lx / 100000,
+    contrib_tbr = fx * K,
+    contrib_tnr = fx * K * surv
+  ) %>%
+  group_by(year) %>%
+  summarise(
+    TBR_check = 5 * sum(contrib_tbr, na.rm = TRUE),
+    TNR = 5 * sum(contrib_tnr, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# -------------------------
+# Resumen final
+# -------------------------
+resumen <- res_tfg_tbr %>%
+  left_join(tnr_tbl, by = "year") %>%
+  arrange(year)
+
+print(resumen)
+kable(resumen, digits = 4, caption = "TGF, TBR y TNR de Sinaloa")
+
+fwrite(resumen, "output/tgf_tbr_tnr_sinaloa.csv")
+fwrite(fec, "output/tabla_intermedia_fecundidad_sinaloa.csv")
+
+# -------------------------
+# Gráfica
+# -------------------------
+graf <- resumen %>%
+  pivot_longer(cols = c(TGF, TBR, TNR), names_to = "medida", values_to = "valor")
+
+ggplot(graf, aes(x = factor(year), y = valor, fill = medida)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  labs(title = "TGF, TBR y TNR de Sinaloa", x = "Año", y = "Valor", fill = NULL) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+ggsave("output/tgf_tbr_tnr_sinaloa.png", width = 8, height = 5, dpi = 300)
+```
+Entre 2010 y 2019, Sinaloa presentó una reducción en sus medidas sintéticas de fecundidad. La TGF descendió de 1.85 a 1.51, mientras que la TBR y la TNR también disminuyeron, de 0.904 a 0.738 y de 0.890 a 0.727, respectivamente. Esto refleja una caída del nivel general de fecundidad y una menor capacidad de reemplazo generacional en el estado.
+
+
+
+```{r}
+graf_comp <- resumen %>%
+  select(year, TBR, TGF, TNR) %>%
+  pivot_longer(cols = c(TBR, TGF, TNR), names_to = "medida", values_to = "valor")
+
+ggplot(graf_comp, aes(x = year, y = valor, color = medida, group = medida)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = c(2010, 2019)) +
+  scale_color_manual(values = c("TBR" = "#F8766D", "TGF" = "#00BA38", "TNR" = "#619CFF")) +
+  labs(
+    title = "TGF, TBR y TNR de Sinaloa",
+    subtitle = "Comparación 2010 vs 2019",
+    x = "Año",
+    y = "Valor",
+    color = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold")
+  )
+
+ggsave("output/grafica_tgf_tbr_tnr_linea_sinaloa.png", width = 8, height = 5, dpi = 300)
+
+```
+
+
+En esta sección se calcula la tasa específica de fecundidad de Sinaloa para 2019. Para ello se combinan los nacimientos por grupo de edad materna con la población femenina de la misma edad, lo que permite estimar la intensidad de la fecundidad en cada tramo quinquenal.
+```{r}
+dir.create("output", showWarnings = FALSE)
+
+# -----------------------
+# Funciones
+# -----------------------
+grupo_edad_fec <- function(x){
+  x <- suppressWarnings(as.numeric(x))
+  case_when(
+    x >= 15 & x <= 19 ~ "15-19",
+    x >= 20 & x <= 24 ~ "20-24",
+    x >= 25 & x <= 29 ~ "25-29",
+    x >= 30 & x <= 34 ~ "30-34",
+    x >= 35 & x <= 39 ~ "35-39",
+    x >= 40 & x <= 44 ~ "40-44",
+    x >= 45 & x <= 49 ~ "45-49",
+    TRUE ~ NA_character_
+  )
+}
+
+# -----------------------
+# Nacimientos Sinaloa 2019
+# -----------------------
+b <- read_excel("nacimientos_2019.xlsx", skip = 5, col_names = TRUE)
+
+fila <- b %>%
+  filter(grepl("Sinaloa", as.character(.[[2]])) | grepl("^25$", as.character(.[[1]]))) %>%
+  slice(1)
+
+nac_sin <- tibble(
+  year = 2019,
+  edad = c("15-19","20-24","25-29","30-34","35-39","40-44","45-49"),
+  nacimientos = c(
+    as.numeric(gsub(",", "", fila[["De 15 a 19 años"]])),
+    as.numeric(gsub(",", "", fila[["De 20 a 24 años"]])),
+    as.numeric(gsub(",", "", fila[["De 25 a 29 años"]])),
+    as.numeric(gsub(",", "", fila[["De 30 a 34 años"]])),
+    as.numeric(gsub(",", "", fila[["De 35 a 39 años"]])),
+    as.numeric(gsub(",", "", fila[["De 40 a 44 años"]])),
+    as.numeric(gsub(",", "", fila[["De 45 a 49 años"]]))
+  )
+)
+
+# -----------------------
+# Población femenina Sinaloa 2019
+# -----------------------
+pob <- fread("Proy_pob.csv")
+
+pob_fem <- pob %>%
+  filter(ENTIDAD == "Sinaloa", ANIO == 2019, SEXO == "Mujeres") %>%
+  mutate(edad = grupo_edad_fec(EDAD)) %>%
+  filter(!is.na(edad)) %>%
+  group_by(year = ANIO, edad) %>%
+  summarise(poblacion_fem = sum(POBLACION, na.rm = TRUE), .groups = "drop")
+
+# -----------------------
+# TEF
+# -----------------------
+tef_sin <- nac_sin %>%
+  left_join(pob_fem, by = c("year", "edad")) %>%
+  mutate(
+    tef = nacimientos / poblacion_fem,
+    tef_x5 = 5 * tef
+  )
+
+```
+
+Para México e Italia se utiliza la base de la ONU, que ya reporta directamente las tasas específicas de fecundidad por grupo de edad. Esto facilita la comparación porque todas las curvas quedan expresadas en la misma escala y con los mismos grupos de edad.
+Al unir Sinaloa con México e Italia, se obtiene una comparación clara entre un caso subnacional y dos contextos nacionales. La gráfica permite ver diferencias en el nivel y en el calendario de la fecundidad, especialmente en qué edades se concentra el mayor número de nacimientos.
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(ggplot2)
+
+path_wpp <- "WPP2024_FERT_F02_FERTILITY_RATES_BY_5-YEAR_AGE_GROUPS_OF_MOTHER.xlsx"
+
+
+wpp <- read_excel(path_wpp, sheet = "Estimates", skip = 16)
+
+tef_pais <- wpp %>%
+  select(
+    pais = `Region, subregion, country or area *`,
+    year = Year,
+    `15-19`, `20-24`, `25-29`, `30-34`, `35-39`, `40-44`, `45-49`
+  ) %>%
+  filter(pais %in% c("Mexico", "Italy"), year == 2019) %>%
+  pivot_longer(
+    cols = c(`15-19`, `20-24`, `25-29`, `30-34`, `35-39`, `40-44`, `45-49`),
+    names_to = "edad",
+    values_to = "tef"
+  ) %>%
+  mutate(
+    tef = as.numeric(gsub(",", ".", tef)) / 1000,
+    pais = recode(pais, "Mexico" = "México", "Italy" = "Italia"),
+    edad = factor(edad, levels = c("15-19","20-24","25-29","30-34","35-39","40-44","45-49"))
+  )
+
+
+graf <- bind_rows(tef_sin, tef_pais) %>%
+  mutate(pais = ifelse(is.na(pais), "Sinaloa", pais))
+
+ggplot(graf, aes(x = edad, y = tef, color = pais, group = pais)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  labs(
+    title = "Curvas TEF 2019",
+    subtitle = "Sinaloa, México e Italia",
+    x = "Grupo de edad",
+    y = "TEF",
+    color = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+ggsave("output/tef_sinaloa_mexico_italia_2019.png", width = 8, height = 5, dpi = 300)
+```
+La gráfica muestra diferencias claras en el calendario de la fecundidad entre los tres casos, aunque con un patrón común: la mayor intensidad de nacimientos se concentra en las edades adultas jóvenes, sobre todo entre los 20 y 34 años. Eso significa que, en 2019, la fecundidad no estaba distribuida de manera uniforme a lo largo de toda la vida reproductiva, sino que se concentraba en un tramo bastante definido.
+
+En México, la curva alcanza su punto más alto entre los 20 y 24 años y se mantiene muy elevada entre los 25 y 29. Después empieza a descender con fuerza a partir de los 30 años. Esto sugiere un patrón de fecundidad relativamente temprano, donde una parte importante de la maternidad ocurre a edades jóvenes, aunque todavía dentro del rango reproductivo esperado.
+
+En Sinaloa, la curva también se concentra en edades jóvenes, pero el máximo aparece un poco más tarde, en el grupo de 25 a 29 años, y luego desciende de forma progresiva. Comparado con México, Sinaloa muestra una fecundidad más desplazada hacia edades un poco mayores, lo que puede interpretarse como una maternidad ligeramente más tardía dentro del mismo contexto nacional.
+
+En Italia, la curva se ve claramente distinta: la fecundidad es muy baja a los 15-19 años y va creciendo hasta alcanzar su punto más alto entre los 30 y 34 años. Después cae de manera marcada. Esto refleja un patrón de maternidad más tardío, lo cual pues sería más común en sociedades donde las mujeres suelen posponer el primer hijo por más tiempo, ya sea por estudios, inserción laboral o cambios en los proyectos familiares.
+
+
+
+
+Finalmente se anexa la demostración de por que la tasa de remplazo es igual a 2.1:
+
+Sabemos que la Tasa Neta de Reproducción (NRR) se define como:
+
+$$NRR=\sum_{x=\alpha}^{\beta} {}_n f_x \frac{L_x^F}{l_0^F}$$
+
+donde:
+
+$${}_n f_x = \text{fecundidad específica por edad}$$
+
+$$\frac{L_x^F}{l_0^F} = \text{Probabilidad de que una mujer recién nacida sobreviva hasta la edad } x$$
+
+$$NRR = \text{\# promedio de hijas que tendrá una mujer durante su vida considerando la mortalidad femenina}$$
+
+y sabemos que:
+
+$$NRR=p(A) \cdot GRR$$
+
+donde:
+
+$$GRR=\text{la Tasa Bruta de Reproducción}$$
+
+$$p(A)=\text{la probabilidad de sobrevivir hasta el final del período reproductivo}$$
+
+Despejando NRR:
+
+$$GRR=\frac{NRR}{p(A)}$$
+
+Ahora la Tasa Neta de Reproducción (NRR) mide cuántas hijas deja en promedio cada mujer considerando la mortalidad.
+
+* Si $NRR>1$, la población crece.
+* Si $NRR<1$, la población disminuye.
+* Si $NRR=1$, cada mujer es reemplazada exactamente por una hija.
+
+Y como estamos buscando la tasa de reemplazo, por definición:
+
+$$NRR=1$$
+
+y
+
+$$NRR=p(A)\cdot GRR$$
+
+Nosotros como ejemplo tomamos:
+
+$$p(A)=0.98$$
+
+es decir, el 98% de las mujeres sobreviven hasta el final de la edad fértil, lo que significa que de cada 100 niñas nacidas:
+
+* 98 sobreviven
+* 2 fallecen antes
+
+por eso:
+
+$$GRR=\frac{NRR}{p(A)}$$
+
+sustituyendo $NRR=1$:
+
+$$GRR=\frac{1}{0.98}$$
+
+$$GRR=1.0204$$
+
+Esto significa que una mujer debe tener en promedio 1.0204 hijas para que, después de descontar la mortalidad, quede exactamente una hija que la reemplace porque:
+
+$$1.0204 \times 0.98 \approx 1$$
+
+Vamos con el SRB que es la razón de sexos al nacimiento, es decir nacen aproximadamente:
+
+* 105 niños por cada 100 niñas
+
+por eso:
+
+$$SRB=\frac{105}{100}=1.05$$
+
+Y la Tasa Global de Fecundidad (TGF) se relaciona con la Tasa Bruta de Reproducción mediante la razón de sexos al nacimiento.
+
+Si:
+
+$$SRB=1.05$$
+
+es decir, nacen 105 niños por cada 100 niñas, entonces los nacimientos totales son:
+
+$$100+105=205$$
+
+comparados con las 100 niñas:
+
+$$\frac{205}{100}=2.05$$
+
+por eso:
+
+$$1+SRB=1+1.05=2.05$$
+
+Interpretamos esto como que por cada hija nacida también nacen aproximadamente 1.05 hijos varones entonces:
+
+$$\text{Total de hijos} = \text{hijas}\times(1+SRB)$$
+
+Por lo que:
+
+$$TGF=GRR(1+SRB)$$
+
+La TGF cuenta todos los hijos (niños y niñas) pero la GRR solo cuenta hijas, así que si una mujer tiene:
+
+$$GRR=1.0204$$
+
+hijas promedio, entonces el número total de hijos será:
+
+$$1.0204(1+1.05)$$
+
+$$1.0204(2.05)$$
+
+$$2.0918$$
+
+si lo redondeamos:
+
+$$TGF \approx 2.1$$
+
+y esto es lo mismo que:
+
+$$TGF=\frac{1}{0.98}(2.05)$$
+
+$$TGF=2.0918$$
+
+$$TGF \approx 2.1$$
+
+$$\therefore \quad TGF \approx 2.1$$
