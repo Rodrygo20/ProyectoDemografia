@@ -74,7 +74,7 @@ fill = "Género") +
 theme_minimal() +
 scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
 theme(legend.position = "bottom")
-# Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
+
 ggsave("Graficas/piramides_poblacionales_sinaloa2010.png", width = 8, height = 5, dpi = 300)
 ```
 
@@ -96,7 +96,7 @@ fill = "Género") +
 theme_minimal() +
 scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
 theme(legend.position = "bottom")
-# Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
+
 ggsave("Graficas/piramides_poblacionales_sinaloa2019.png", width = 8, height = 5, dpi = 300)
 ```
 
@@ -120,7 +120,7 @@ fill = "Género") +
 theme_minimal() +
 scale_fill_manual(values = c("Hombres" = "steelblue", "Mujeres" = "salmon")) +
 theme(legend.position = "bottom")
-# Pégalo al final, después del theme_minimal() de tu gráfica de pirámides
+
 ggsave("Graficas/piramides_poblacionales_sinaloa2021.png", width = 8, height = 5, dpi = 300)
 ```
 Al observar la evolución de las pirámides poblacionales de Sinaloa para los años 2010, 2019 y 2021, vemos que el estado se encuentra atravesando una fase avanzada de su transición demográfica. La comparativa temporal revela tres fenómenos estructurales clave:
